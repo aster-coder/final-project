@@ -1,0 +1,42 @@
+<!--Html website-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Interview Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="chat-container">
+        <div id="interview-setup-container">
+            <form id="interview-setup">
+                <label for="interview_length">Interview Length:</label>
+                <select name="interview_length" id="interview_length">
+                    <option value="1">Short (5 questions)</option>
+                    <option value="2">Medium (10 questions)</option>
+                </select>
+                <label for="interview_category">Interview Category:</label>
+                <select name="interview_category" id="interview_category">
+                    <option value="1">General</option>
+                    <option value="2">Sales</option>
+                    <option value="3">IT</option>
+                    <option value="4">CS</option>
+                </select>
+                <button type="button" id="start-interview">Start Interview</button>
+            </form>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">Welcome to the Interview! Please setup the interview above.</div>
+        </div>
+        <div class="input-container" id="input-area" style="display: none;">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+        </div>
+        <div id="analysis-section" style="display: none;">
+            <h2>Interview Analysis</h2>
+            <div id="analysis-content"></div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

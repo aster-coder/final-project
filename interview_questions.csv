@@ -1,0 +1,62 @@
+﻿question_id,question_text,sub_category
+1,Can you tell me about yourself?,general
+2,What are your greatest strengths and weaknesses?,general
+3,Why are you applying for this job?,general
+4,What are you passionate about?,general
+5,What strengths do you think are critical for this position?,general
+6,Do you prefer to work independently or in a group setting?,general
+7,How do you handle stress? Has it been a problem for you in the past?,general
+8,"During team projects, what role do you usually fill?",general
+9,Describe your previous work or volunteering experience?,general
+10,"What level of expertise do you have with traditional office software programs (i.e., Microsoft Office/Excel/PowerPoint)?",general
+11,How do you organize your time and prioritize tasks during a busy day?,general
+12,Tell me about a time you failed.,general
+13,Describe a time when you had some adversity in life and what you did to overcome it.,general
+14,"Do your current studies align with the type of work we do? Do you see a future in this industry, and if so, in what role?",general
+15,What three words may a colleague use to describe you?,sales
+16,Do you prefer to manage people or ideas?,sales
+17,How do you handle relations with vendors?,sales
+18,Why do you wish to work for this company?,sales
+19,How did you hear about this oppurtunity?,sales
+20,What interests you about the position?,sales
+21,What is your greatest strength and weakness?,sales
+22,How do you compensate for your weaknesses?,sales
+23,Why do you think you're the right candiate for this job?,sales
+24,How do you stay updated on industrial news?,sales
+25, What past experiences make you good at sales?,sales
+26,What qualities does someone need to be good at sales?,sales
+27,What sales technologies do you have experience using? ,sales
+28,What’s the best way to talk with customers and build relationships with them?,sales
+29,Could you walk me through your process for targeting and attracting clients?,sales
+30,How do you keep your IT skills current?,IT
+31,"What's a new software or technology you recently worked with, and did you enjoy it?",IT
+32,What development tools have you used?,IT
+33,Why do you think you're the right candidate for this job?,IT
+34,"What technical websites do you follow, and why?",IT
+35,What is your approach to handling multiple deadlines?,IT
+36,"What elements are necessary for a successful team, and why?",IT
+37,"Do you prefer service-oriented or batch-oriented solutions, and why?",IT
+38,Can you define authentication and authorization and the tools used to support them in an enterprise deployment?,IT
+39, Can you tell me about a time you experience failure?,IT
+40,"Are you familiar with the various types of Internet Protocol (IP) addresses, such as central processing unit (CPU), a virtual private network (VPN) and Domain Name System (DNS)?",IT
+41,How might you explain a complex IT challenge to someone with limited subject knowledge?,IT
+42,How do you stay current with the latest developments and trends?,IT
+43,Can you tell us about a time when you had to learn new technology quickly and how you went about it?,IT
+44,How do you approach problem-solving in your work?,CS
+45,Can you walk us through your experience with a specific programming language or technology?,CS
+46,What are continuous integration and continuous delivery?,CS
+47,Can you explain the SOLID principles of object-oriented design?,CS
+48,Can you explain the idea behind consensus algorithms in distributed systems?,CS
+49,Can you explain the difference between a primary key and a foreign key in a database table?,CS
+50,Can you explain the difference between a client-side and a server-side language?,CS
+51,Can you explain the difference between a centralized and a decentralized system?,CS
+52," Can you explain the time and space complexities of various data structures like arrays, linked lists, trees and graphs?",CS
+53,Can you explain the difference between a waterfall and an agile development approach?,CS
+54,Can you give an example of a project where you had to work with a team and how you contributed to its success?,CS
+55,Can you give an example of how you have applied your technical skills to provide a business solution?,CS
+56,"
+Can you explain the difference between load balancing and fault tolerance in distributed systems?",CS
+57,Can you explain Big O notation and its significance in algorithm analysis?,CS
+58,What is polymorphism in Object-Oriented Programming? ,CS
+59,How would you implement a secure user authentication system in a web application?,CS
+60,What is a deadlock in concurrent computing?,CS
