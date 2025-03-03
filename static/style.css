@@ -18,12 +18,12 @@ body {
     flex-direction: column;
 }
 
-#interview-setup-container {
+#setup-interview-container {
     padding: 10px;
     background-color: #e0e0e0;
 }
 
-#interview-setup label, #interview-setup select, #interview-setup button {
+#setup-interview label, #setup-interview select, #setup-interview button {
     margin-bottom: 5px;
     display: block;
     width: 95%;

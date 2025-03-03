@@ -5,14 +5,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const inputArea = document.getElementById('input-area');
     const analysisSection = document.getElementById('analysis-section');
     const analysisContent = document.getElementById('analysis-content');
-    const interviewSetup = document.getElementById('interview-setup-container');
-    const startButton = document.getElementById('start-interview');
+    const setupInterviewContainer = document.getElementById('setup-interview-container'); // Corrected ID
+    const setupInterviewForm = document.getElementById('setup-interview'); // Corrected ID
+    const startButton = document.getElementById('start-interview'); // Corrected ID
 
     startButton.addEventListener('click', setupInterview);
 
     function setupInterview() {
-        const formData = new FormData(document.getElementById('interview-setup'));
-
+        const formData = new FormData(setupInterviewForm); // Corrected ID
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ', ' + pair[1]);
+        }
         fetch('/setup_interview', {
             method: 'POST',
             body: formData
@@ -20,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                interviewSetup.style.display = 'none';
+                setupInterviewContainer.style.display = 'none'; // Corrected ID
                 inputArea.style.display = 'flex';
                 getQuestion();
             } else {
@@ -136,29 +139,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 analysisHtml += `<p><strong>Keyword Match Score:</strong> ${analysis.keyword_match_score}</p>`;
                 analysisHtml += `<p><strong>Sentiment:</strong> Positive: ${analysis.sentiment.pos.toFixed(2)}, Negative: ${analysis.sentiment.neg.toFixed(2)}, Neutral: ${analysis.sentiment.neu.toFixed(2)}, Compound: ${analysis.sentiment.compound.toFixed(2)}</p>`;
                 analysisHtml += `<p><strong>Answer Length:</strong> ${analysis.answer_length} words</p>`;
-                //add advice here.
-                analysisHtml += "<p><strong>Advice:</strong></p>"
+                analysisHtml += "<p><strong>Advice:</strong></p>";
                 let adviceGiven = false;
 
                 if (analysis.keyword_match_score < 0.5) {
-                    analysisHtml += `<p>  - Your answer to '${questionBase}' could include more relevant keywords.</p>`;
+                    analysisHtml += `<p>  - Your answer to '${questionBase}' could include more relevant keywords.</p>`;
                     adviceGiven = true;
                 }
 
                 if (analysis.sentiment.compound < -0.2) {
-                    analysisHtml += `<p>  - Your answer to '${questionBase}' had a somewhat negative tone.</p>`;
+                    analysisHtml += `<p>  - Your answer to '${questionBase}' had a somewhat negative tone.</p>`;
                     adviceGiven = true;
                 }
 
                 if (analysis.answer_length < 20) {
-                    analysisHtml += `<p>  - Your answer to '${questionBase}' was quite short.</p>`;
+                    analysisHtml += `<p>  - Your answer to '${questionBase}' was quite short.</p>`;
                     adviceGiven = true;
                 }
 
                 if (!adviceGiven) {
-                    analysisHtml += "<p>  - Your answer looks good!</p>";
+                    analysisHtml += "<p>  - Your answer looks good!</p>";
                 }
-
             }
         }
         return analysisHtml;
