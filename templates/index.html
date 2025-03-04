@@ -9,12 +9,12 @@
     <div class="chat-container">
         <div id="setup-interview-container">
             <form id="setup-interview">
-                <label for="interview_length">Interview Length:</label>
+                <label for="num_questions">Interview Length:</label>
                 <select name="num_questions" id="interview_length">
                     <option value="1">Short (5 questions)</option>
                     <option value="2">Medium (10 questions)</option>
                 </select>
-                <label for="interview_category">Interview Category:</label>
+                <label for="category_id">Interview Category:</label>
                 <select name="category_id" id="interview_category">
                     <option value="1">General</option>
                     <option value="2">Sales</option>
@@ -26,14 +26,13 @@
         </div>
 
         <div class="chat-messages" id="chat-messages">
-            <div class="message bot-message">Welcome to the Interview! Please setup the interview above.</div>
-        </div>
+            </div>
         <div class="input-container" id="input-area" style="display: none;">
             <input type="text" id="user-input" placeholder="Type your message...">
             <button id="send-button">Send</button>
         </div>
         <div id="analysis-section" style="display: none;">
-            <h2>Interview Analysis</h2>
+            <h2>Interview Analysis Report</h2>
             <div id="analysis-content"></div>
         </div>
     </div>

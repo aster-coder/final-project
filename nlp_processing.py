@@ -16,14 +16,14 @@ except LookupError:
 classifier = pipeline("zero-shot-classification")
 
 # Sentiment analyzer
-analyzer = SentimentIntensityAnalyzer()
+sia = SentimentIntensityAnalyzer()
 
 def analyze_answer(answer, keywords):
     analysis = {}
     matched_keywords = [keyword for keyword in keywords if keyword.lower() in answer.lower()]
     analysis['matched_keywords'] = matched_keywords
     analysis['keyword_match_score'] = len(matched_keywords)
-    sentiment = analyzer.polarity_scores(answer)
+    sentiment = sia.polarity_scores(answer)
     analysis['sentiment'] = sentiment
     analysis['sentiment_score'] = sentiment['compound']
     analysis['answer_length'] = len(answer.split())
@@ -36,3 +36,22 @@ def get_intent(user_input, candidate_labels):  # Pass candidate labels as argume
     except Exception as e:
         print(f"Error in intent recognition: {e}")
         return None  # Or handle the error as appropriate
+
+def process_answers(answers):
+    print("process_answers called with answers:", answers)
+    try:
+        analysis_results = []
+
+        for answer in answers:
+            sentiment = sia.polarity_scores(answer)
+            analysis_results.append({
+                "answer": answer,
+                "sentiment": sentiment
+            })
+        print("analysis_results:", analysis_results)
+        return analysis_results
+
+    except Exception as e:
+        print(f"Error in process_answers: {e}")
+        return []
+        

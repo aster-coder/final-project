@@ -2,6 +2,7 @@ import sqlite3
 import json
 import nlp_processing
 import interview_logic
+from flask import g
 
 def create_table_if_not_exists():
     conn = sqlite3.connect('interview_data.db')
@@ -74,5 +75,17 @@ def get_interview_data():  # No candidate name
     except Exception as e:
         print(f"Error retrieving data: {e}")
         return None, None
+    finally:
+        conn.close()
+
+def update_analysis(session_id, analysis_results):
+    conn = sqlite3.connect('interview_data.db')
+    cursor = conn.cursor()
+    try:
+        cursor.execute("UPDATE interviews SET interview_analysis = ? WHERE session_id = ?", (json.dumps(analysis_results), session_id))
+        conn.commit()
+    except Exception as e:
+        print(f"Error updating analysis: {e}")
+        conn.rollback()
     finally:
         conn.close()

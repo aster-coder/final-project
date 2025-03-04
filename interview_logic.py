@@ -50,17 +50,28 @@ def load_questions(filepath="interview_questions.csv"):
 
 interview_questions = load_questions()
 
-def get_question(category_id, question_index):
-    """Gets a question based on category and index."""
+def get_question(category_id, asked_questions=None):
+    """Gets a random question based on category."""
+    if asked_questions is None:
+        asked_questions = []
+
     if category_id in interview_questions:
-        if 0 <= question_index < len(interview_questions[category_id]):
-            return interview_questions[category_id][question_index]
+        available_questions = [
+            q for q in interview_questions[category_id] if q not in asked_questions
+        ]
+        if available_questions:
+            return random.choice(available_questions)
         else:
-            return None  # Index out of range
+            return None  # No more questions available in this category
     else:
         return None  # Category not found
-
+    
 def run_analysis(answers):
-    #Your analysis logic
-    print("Running analysis")
-    print(answers)
+    try:
+        #Your analysis logic
+        print("Running analysis")
+        print(answers)
+        analysis_results = nlp_processing.process_answers(answers)
+        data_handling.update_analysis(session["session_id"], analysis_results)
+    except Exception as e:
+        print(f"Error in run_analysis: {e}")

@@ -6,13 +6,13 @@ import sqlite3
 import datetime
 import data_handling  # your data handling file
 import interview_logic  # your interview logic file
-
-
+import random
+import json
+import nlp_processing
 
 app = Flask(__name__)
-app.secret_key = "OLRoiKV7lSxdp17s"  # Important for session management
-DATABASE = "interview_data.db"
-database_initialized = False  # Global variable
+app.secret_key = "OLRoiKV7lSxdp17s"
+DATABASE = "interview_data.db"  # Use the same database
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -22,9 +22,11 @@ def get_db():
     return db
 
 def init_db():
-    with app.open_resource('schema.sql', mode='r') as f:
-        get_db().executescript(f.read())
-    get_db().commit()
+    with app.app_context():
+        db = get_db()
+        with app.open_resource('schema.sql', mode='r') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
 
 @app.teardown_appcontext
 def close_connection(exception):
@@ -32,102 +34,83 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
-@app.before_request
-def before_request_func():
-    global database_initialized
-    if not database_initialized:
-        init_db()
-        database_initialized = True
-
-
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
         session["num_questions"] = int(request.form["num_questions"]) * 5
         session["category_id"] = int(request.form["category_id"])
-        session["answers"] = {}
+        session["answers"] = []
         session["question_index"] = 0
-        return redirect(url_for('ask_question')) #Corrected line
+        session["asked_questions"] = []
+        session["session_id"] = random.randint(1, 100000)
+        print(f"Session Answers initialized: {session.get('answers')}")
+        return redirect(url_for('ask_question'))
     return render_template("index.html")
-    
-@app.route("/setup_interview", methods=["POST"])
-def setup_interview():
-    num_questions = int(request.form["num_questions"]) 
-    category_id = int(request.form["category_id"])
 
-    session["num_questions"] = num_questions
-    session["category_id"] = category_id
-    session["question_index"] = 0
-    session["answers"] = {}
 
-    return jsonify({"status": "success"})
+@app.route("/ask_question", methods=["GET"])
+def ask_question():
+    if "question_index" not in session:
+        return jsonify({"status": "finished", "analysis": {}})
 
-app.route("/get_question", methods=["GET"])
-@app.route("/get_question", methods=["GET"])
-def get_question():
-    if "question_index" not in session or session["question_index"] >= session["num_questions"]:
-        if "answers" in session:
-            interview_logic.run_analysis(session["answers"])
-        return jsonify({"status": "finished"})
+    if session["question_index"] > session["num_questions"]:
+        session_id = session.get('session_id')
+        answers = get_interview_data(session_id)
+        analysis_results = nlp_processing.process_answers(answers)
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("UPDATE interviews SET interview_analysis = ? WHERE session_id = ?", (json.dumps(analysis_results), session_id))
+        db.commit()
+        return jsonify({"status": "finished", "analysis": analysis_results})
 
     try:
         category_id = session["category_id"]
-        question_index = session["question_index"]
-        question = interview_logic.get_question(category_id, question_index)
-        session["current_question"] = question
+        asked_questions = session.get("asked_questions", [])
+        print(f"Category ID: {category_id}")
+        print(f"Asked Questions: {asked_questions}")
+        question = interview_logic.get_question(category_id, asked_questions)
+        print(f"Returned Question: {question}")
+
         if question:
+            session["current_question"] = question
+            session["asked_questions"] = asked_questions + [question]
+            session["question_index"] += 1
             return jsonify({"question": question})
         else:
+            print("No question returned.")
             return jsonify({"question": None})
     except Exception as e:
-        print(f"Error in get_question: {e}")
+        print(f"Error in ask_question: {e}")
         return jsonify({"error": str(e)})
     
-    
+def get_interview_data(session_id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT interview_answers FROM interviews WHERE session_id = ?", (session_id,))
+    result = cursor.fetchone()
+    if result and result['interview_answers']:
+        return json.loads(result['interview_answers'])
+    return []
+
+def save_interview_data(session_id, data):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("REPLACE INTO interviews (session_id, interview_answers, timestamp) VALUES (?, ?, ?)", (session_id, json.dumps(data), datetime.datetime.now()))
+    db.commit()
+
 @app.route("/submit_answer", methods=["POST"])
 def submit_answer():
-    data = request.get_json()
-    question = session.get("current_question")
-    answer = data.get("answer")
-
-    if question and answer:
-        session["answers"][question] = answer
-        session["question_index"] += 1
+    try:
+        data = request.get_json()
+        answer = data["answer"]
+        session_id = session.get('session_id')
+        answers = get_interview_data(session_id) #get existing answers
+        answers.append(answer) #append new answer
+        save_interview_data(session_id, answers) #save updated answers
         return jsonify({"status": "success"})
-    else:
-        return jsonify({"status": "error", "message": "Invalid question or answer."})
-
-@app.route("/get_analysis", methods=["GET"])
-def get_analysis():
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT question, answer FROM answers")
-    answers_data = cursor.fetchall()
-
-    cursor.execute("SELECT question, matched_keywords, keyword_match_score, sentiment_pos, sentiment_neg, sentiment_neu, sentiment_compound, answer_length FROM analysis")
-    analysis_data = cursor.fetchall()
-    conn.close()
-
-    if answers_data and analysis_data:
-        answers = {row['question']: row['answer'] for row in answers_data}
-        analysis = {}
-        for row in analysis_data:
-            analysis[row['question'] + '_analysis'] = {
-                'matched_keywords': row['matched_keywords'].split(',') if row['matched_keywords'] else [],
-                'keyword_match_score': row['keyword_match_score'],
-                'sentiment': {
-                    'pos': row['sentiment_pos'],
-                    'neg': row['sentiment_neg'],
-                    'neu': row['sentiment_neu'],
-                    'compound': row['sentiment_compound']
-                },
-                'answer_length': row['answer_length']
-            }
-        result = {**answers, **analysis}
-        return jsonify(result)
-    else:
-        return jsonify({}) # return empty json if no data.
+    except Exception as e:
+        print(f"Error in submit_answer: {e}")
+        return jsonify({"error": str(e)})
 
 if __name__ == "__main__":
     app.run(debug=True)

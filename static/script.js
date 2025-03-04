@@ -3,32 +3,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
     const inputArea = document.getElementById('input-area');
-    const analysisSection = document.getElementById('analysis-section');
+    const analysisSection = document.getElementById('analysis-section'); //correct line
     const analysisContent = document.getElementById('analysis-content');
-    const setupInterviewContainer = document.getElementById('setup-interview-container'); // Corrected ID
-    const setupInterviewForm = document.getElementById('setup-interview'); // Corrected ID
-    const startButton = document.getElementById('start-interview'); // Corrected ID
+    const setupInterviewContainer = document.getElementById('setup-interview-container');
+    const setupInterviewForm = document.getElementById('setup-interview');
+    const startButton = document.getElementById('start-interview');
+    let sessionAnswers = {}; // Added to store session answers
 
     startButton.addEventListener('click', setupInterview);
 
     function setupInterview() {
-        const formData = new FormData(setupInterviewForm); // Corrected ID
-        for (let pair of formData.entries()) {
-            console.log(pair[0] + ', ' + pair[1]);
-        }
-        fetch('/setup_interview', {
+        const formData = new FormData(setupInterviewForm);
+        fetch('/', {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                setupInterviewContainer.style.display = 'none'; // Corrected ID
-                inputArea.style.display = 'flex';
-                getQuestion();
-            } else {
-                alert(data.message);
-            }
+        .then(() => {
+            setupInterviewContainer.style.display = 'none';
+            inputArea.style.display = 'flex';
+            appendMessage('bot-message', 'Welcome to your interview!');
+            getQuestion();
         })
         .catch(error => {
             console.error('Error setting up interview:', error);
@@ -37,14 +31,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getQuestion() {
-        fetch('/get_question')
+        fetch('/ask_question')
             .then(response => response.json())
             .then(data => {
+                console.log("Data received from server:", data); //added log
                 if (data.question) {
                     appendMessage('bot-message', data.question);
                 } else if (data.status === 'finished') {
-                    getAnalysis();
                     inputArea.style.display = 'none';
+                    console.log("Analysis data received:", data.analysis);
+                    displayAnalysis(data.analysis);
                 } else {
                     alert(data.message);
                 }
@@ -66,8 +62,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = userInput.value.trim();
         if (message) {
             appendMessage('user-message', message);
+            sessionAnswers[chatMessages.lastElementChild.textContent] = message;
+            console.log("sessionAnswers before submit:", sessionAnswers); //added console log
             userInput.value = '';
-
+    
             fetch('/submit_answer', {
                 method: 'POST',
                 headers: {
@@ -108,60 +106,21 @@ document.addEventListener('DOMContentLoaded', function() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    function getAnalysis() {
-        fetch('/get_analysis')
-            .then(response => response.json())
-            .then(data => {
-                if (data && Object.keys(data).length > 0) {
-                    analysisSection.style.display = 'block';
-                    analysisContent.innerHTML = formatAnalysis(data);
-                } else {
-                    alert('No analysis data available.');
-                }
-            })
-            .catch(error => {
-                console.error('Error getting analysis:', error);
-                alert('An error occurred while getting the analysis.');
-            });
+    function displayAnalysis(analysis) {
+        console.log("displayAnalysis called with analysis:", analysis); // added console log
+        analysisSection.style.display = 'block';
+        analysisContent.innerHTML = formatAnalysis(analysis);
     }
-
+    
     function formatAnalysis(data) {
         let analysisHtml = '';
-        for (const question in data) {
-            if (question.endsWith('_analysis')) {
-                const questionBase = question.replace('_analysis', '');
-                const analysis = data[question];
-                const answer = data[questionBase];
-
-                analysisHtml += `<h3>Question: ${questionBase}</h3>`;
-                analysisHtml += `<p><strong>Answer:</strong> ${answer}</p>`;
-                analysisHtml += `<p><strong>Matched Keywords:</strong> ${analysis.matched_keywords ? analysis.matched_keywords.join(', ') : 'None'}</p>`;
-                analysisHtml += `<p><strong>Keyword Match Score:</strong> ${analysis.keyword_match_score}</p>`;
-                analysisHtml += `<p><strong>Sentiment:</strong> Positive: ${analysis.sentiment.pos.toFixed(2)}, Negative: ${analysis.sentiment.neg.toFixed(2)}, Neutral: ${analysis.sentiment.neu.toFixed(2)}, Compound: ${analysis.sentiment.compound.toFixed(2)}</p>`;
-                analysisHtml += `<p><strong>Answer Length:</strong> ${analysis.answer_length} words</p>`;
-                analysisHtml += "<p><strong>Advice:</strong></p>";
-                let adviceGiven = false;
-
-                if (analysis.keyword_match_score < 0.5) {
-                    analysisHtml += `<p>  - Your answer to '${questionBase}' could include more relevant keywords.</p>`;
-                    adviceGiven = true;
-                }
-
-                if (analysis.sentiment.compound < -0.2) {
-                    analysisHtml += `<p>  - Your answer to '${questionBase}' had a somewhat negative tone.</p>`;
-                    adviceGiven = true;
-                }
-
-                if (analysis.answer_length < 20) {
-                    analysisHtml += `<p>  - Your answer to '${questionBase}' was quite short.</p>`;
-                    adviceGiven = true;
-                }
-
-                if (!adviceGiven) {
-                    analysisHtml += "<p>  - Your answer looks good!</p>";
-                }
-            }
-        }
+        data.forEach(item => { // Iterate through the list
+            analysisHtml += `<h3>Question: ${item.question}</h3>`;
+            analysisHtml += `<p><strong>Answer:</strong> ${item.answer}</p>`;
+            analysisHtml += `<p><strong>Sentiment:</strong> ${item.sentiment.compound.toFixed(2)}</p>`;
+        });
+        
+        console.log("Generated analysisHtml:", analysisHtml); //added console log
         return analysisHtml;
     }
 });
