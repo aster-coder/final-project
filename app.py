@@ -11,7 +11,7 @@ import json
 import nlp_processing
 
 app = Flask(__name__)
-app.secret_key = "OLRoiKV7lSxdp17s"
+app.secret_key = "OLRoiKV7lSxdp17s" #secret key
 DATABASE = "interview_data.db"  # Use the same database
 
 def get_db():
