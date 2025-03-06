@@ -52,7 +52,8 @@ body {
 .user-message {
     background-color: #007bff;
     color: white;
-    align-self: flex-end;
+    align-self: flex-end; 
+    margin-left: auto; 
 }
 
 .input-container {
@@ -88,7 +89,11 @@ button {
 }
 
 #analysis-content {
-    font-size: 0.9em;
+    max-height: 300px; /* Adjust as needed */
+    overflow-y: auto;
+    border: 1px solid #ccc; /* Optional: Add a border for visual clarity */
+    padding: 10px;
+    font-size: 0.9em; /* Ensure font size is consistent */
 }
 
 .timestamp {

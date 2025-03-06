@@ -65,7 +65,7 @@ def get_question(category_id, asked_questions=None):
             return None  # No more questions available in this category
     else:
         return None  # Category not found
-    
+#might remove function this seems redundant
 def run_analysis(answers):
     try:
         #Your analysis logic

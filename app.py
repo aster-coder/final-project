@@ -1,7 +1,7 @@
 #Astra Noronha M00909675 PDE3823
 #backend of the website using flask to integrate 
 #here is where the main function of the chatbot logic are taken from
-from flask import Flask, render_template, request, jsonify, session, g,redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, g, redirect, url_for
 import sqlite3
 import datetime
 import data_handling  # your data handling file
@@ -11,8 +11,9 @@ import json
 import nlp_processing
 
 app = Flask(__name__)
-app.secret_key = "OLRoiKV7lSxdp17s" #secret key
+app.secret_key = "OLRoiKV7lSxdp17s"  # secret key
 DATABASE = "interview_data.db"  # Use the same database
+
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -21,6 +22,7 @@ def get_db():
         db.row_factory = sqlite3.Row
     return db
 
+
 def init_db():
     with app.app_context():
         db = get_db()
@@ -28,11 +30,13 @@ def init_db():
             db.cursor().executescript(f.read())
         db.commit()
 
+
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -55,11 +59,18 @@ def ask_question():
 
     if session["question_index"] > session["num_questions"]:
         session_id = session.get('session_id')
-        answers = get_interview_data(session_id)
-        analysis_results = nlp_processing.process_answers(answers)
+        interview_data = get_interview_data(session_id)
+        analysis_results = nlp_processing.process_answers([item['answer'] for item in interview_data])
+
+        # Add questions to the analysis results
+        for i, result in enumerate(analysis_results):
+            if i < len(interview_data):
+                result['question'] = interview_data[i]['question']
+
         db = get_db()
         cursor = db.cursor()
-        cursor.execute("UPDATE interviews SET interview_analysis = ? WHERE session_id = ?", (json.dumps(analysis_results), session_id))
+        cursor.execute("UPDATE interviews SET interview_analysis = ? WHERE session_id = ?",
+                       (json.dumps(analysis_results), session_id))
         db.commit()
         return jsonify({"status": "finished", "analysis": analysis_results})
 
@@ -82,7 +93,8 @@ def ask_question():
     except Exception as e:
         print(f"Error in ask_question: {e}")
         return jsonify({"error": str(e)})
-    
+
+
 def get_interview_data(session_id):
     db = get_db()
     cursor = db.cursor()
@@ -92,25 +104,30 @@ def get_interview_data(session_id):
         return json.loads(result['interview_answers'])
     return []
 
+
 def save_interview_data(session_id, data):
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("REPLACE INTO interviews (session_id, interview_answers, timestamp) VALUES (?, ?, ?)", (session_id, json.dumps(data), datetime.datetime.now()))
+    cursor.execute("REPLACE INTO interviews (session_id, interview_answers, timestamp) VALUES (?, ?, ?)",
+                   (session_id, json.dumps(data), datetime.datetime.now()))
     db.commit()
+
 
 @app.route("/submit_answer", methods=["POST"])
 def submit_answer():
     try:
         data = request.get_json()
         answer = data["answer"]
+        question = data["question"] #get question from post request.
         session_id = session.get('session_id')
-        answers = get_interview_data(session_id) #get existing answers
-        answers.append(answer) #append new answer
-        save_interview_data(session_id, answers) #save updated answers
+        answers = get_interview_data(session_id)  # get existing answers
+        answers.append({"question": question, "answer": answer})  # append new answer with question.
+        save_interview_data(session_id, answers)  # save updated answers
         return jsonify({"status": "success"})
     except Exception as e:
         print(f"Error in submit_answer: {e}")
         return jsonify({"error": str(e)})
+
 
 if __name__ == "__main__":
     app.run(debug=True)
