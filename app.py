@@ -117,17 +117,33 @@ def save_interview_data(session_id, data):
 def submit_answer():
     try:
         data = request.get_json()
-        answer = data["answer"]
-        question = data["question"] #get question from post request.
+        answer = data.get("answer", "") #allow for empty answers.
+        question = data.get("question", "")
         session_id = session.get('session_id')
-        answers = get_interview_data(session_id)  # get existing answers
-        answers.append({"question": question, "answer": answer})  # append new answer with question.
-        save_interview_data(session_id, answers)  # save updated answers
+        answers = get_interview_data(session_id)
+        answers.append({"question": question, "answer": answer})
+        save_interview_data(session_id, answers)
         return jsonify({"status": "success"})
     except Exception as e:
         print(f"Error in submit_answer: {e}")
         return jsonify({"error": str(e)})
 
+@app.route('/process_speech', methods=['POST'])
+def process_speech():
+    data = request.get_json()
+    text = data['text']
+    current_question = session.get("current_question")
 
+    submit_answer_data = {
+        "answer": text,
+        "question": current_question
+    }
+
+    try:
+        submit_answer() #call submit answer function to save data.
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    
 if __name__ == "__main__":
     app.run(debug=True)

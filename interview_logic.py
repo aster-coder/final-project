@@ -66,12 +66,3 @@ def get_question(category_id, asked_questions=None):
     else:
         return None  # Category not found
 #might remove function this seems redundant
-def run_analysis(answers):
-    try:
-        #Your analysis logic
-        print("Running analysis")
-        print(answers)
-        analysis_results = nlp_processing.process_answers(answers)
-        data_handling.update_analysis(session["session_id"], analysis_results)
-    except Exception as e:
-        print(f"Error in run_analysis: {e}")

@@ -62,21 +62,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = userInput.value.trim();
         if (message) {
             appendMessage('user-message', message);
-    
-            // Target the span that contains the question text
-            const questionSpan = chatMessages.lastElementChild.previousElementSibling.querySelector('.message-content');
-            const questionText = questionSpan.textContent;
-    
-            sessionAnswers[message] = { question: questionText, answer: message };
-            console.log("sessionAnswers before submit:", sessionAnswers);
-            userInput.value = '';
-    
             fetch('/submit_answer', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ question: questionText, answer: message })
+                body: JSON.stringify({
+                    question: chatMessages.lastElementChild.previousElementSibling.querySelector('.message-content').textContent,
+                    answer: message
+                })
             })
             .then(response => response.json())
             .then(data => {
@@ -90,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error submitting answer:', error);
                 alert('An error occurred while submitting your answer.');
             });
+            userInput.value = ''; // Clear the input after sending
         }
     }
 
@@ -137,5 +132,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
         console.log("Generated analysisHtml:", analysisHtml);
         return analysisHtml;
+    }
+    
+    // Add speech recognition functionality
+    let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+
+        const speechButton = document.getElementById('speech-button');
+        const userInput = document.getElementById('user-input');
+        let speechActive = false;
+
+        speechButton.addEventListener('click', () => {
+            if (speechActive) {
+                recognition.stop();
+                speechActive = false;
+                speechButton.classList.remove('active');
+            } else {
+                recognition.start();
+                speechActive = true;
+                speechButton.classList.add('active');
+            }
+        });
+
+        recognition.onresult = (event) => {
+            let interimTranscript = '';
+            let finalTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript + ' '; // Add space between transcriptions
+                } else {
+                    interimTranscript += event.results[i][0].transcript;
+                }
+            }
+            userInput.value = (userInput.value + ' ' + finalTranscript).trim() || (userInput.value + interimTranscript).trim(); // Append results
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            alert('Speech recognition error. Please try again.');
+            speechActive = false;
+            speechButton.classList.remove('active');
+        };
+    } else {
+        console.error('Speech recognition is not supported in this browser.');
+        alert('Speech recognition is not supported in your browser.');
+        document.getElementById('speech-button').style.display = 'none';
     }
 });

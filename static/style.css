@@ -55,6 +55,14 @@ body {
     align-self: flex-end; 
     margin-left: auto; 
 }
+#speech-button.active {
+    background-color: #008000; /* Example: Green when active */
+    color: white; /* Example: White text */
+}
+
+#speech-button{
+    transition: background-color 0.3s ease;
+}
 
 .input-container {
     padding: 10px;
