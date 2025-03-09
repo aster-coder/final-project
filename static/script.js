@@ -116,15 +116,27 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatAnalysis(data) {
         let analysisHtml = '';
         data.forEach(item => {
-            const question = item.question; // Get question from the analysis data
+            const question = item.question;
             analysisHtml += `<h3>Question: ${question}</h3>`;
             analysisHtml += `<p><strong>Answer:</strong> ${item.answer}</p>`;
             analysisHtml += `<p><strong>Sentiment:</strong> ${item.sentiment.compound.toFixed(2)}</p>`;
 
             analysisHtml += `<p><strong>Technical Keywords:</strong> ${item.keywords.technical.join(', ')}</p>`;
             analysisHtml += `<p><strong>Soft Skills Keywords:</strong> ${item.keywords.soft_skills.join(', ')}</p>`;
-            analysisHtml += `<p><strong>Technical Context:</strong> ${item.keywords.technical_context.join('<br>')}</p>`;
-            analysisHtml += `<p><strong>Soft Skills Context:</strong> ${item.keywords.soft_skills_context.join('<br>')}</p>`;
+
+            // Corrected Technical Context Display
+            analysisHtml += `<p><strong>Technical Context:</strong><br>`;
+            for (const keyword in item.keywords.technical_context) {
+                analysisHtml += `<strong>${keyword}:</strong> ${item.keywords.technical_context[keyword].join('<br>')} <br>`;
+            }
+            analysisHtml += `</p>`;
+
+            // Corrected Soft Skills Context Display
+            analysisHtml += `<p><strong>Soft Skills Context:</strong><br>`;
+            for (const keyword in item.keywords.soft_skills_context) {
+                analysisHtml += `<strong>${keyword}:</strong> ${item.keywords.soft_skills_context[keyword].join('<br>')} <br>`;
+            }
+            analysisHtml += `</p>`;
 
             analysisHtml += `<p><strong>Grammar Errors:</strong> ${item.grammar_errors.join('<br>')}</p>`;
             analysisHtml += `<p><strong>Sentence Feedback:</strong> ${item.sentence_structure_feedback.join('<br>')}</p>`;
