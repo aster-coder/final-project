@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interview Sessions Dashboard</title>
+</head>
+<body>
+    <h1>Your Interview Sessions</h1>
+    <a href="/logout">Logout</a>
+    <ul>
+        {% for session in sessions %}
+            <li>
+                Session ID: {{ session.session_id }} - Timestamp: {{ session.timestamp }}
+                <a href="{{ url_for('view_session', session_id=session.session_id) }}">View Details</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

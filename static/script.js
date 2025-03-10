@@ -3,12 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
     const inputArea = document.getElementById('input-area');
-    const analysisSection = document.getElementById('analysis-section');
-    const analysisContent = document.getElementById('analysis-content');
     const setupInterviewContainer = document.getElementById('setup-interview-container');
     const setupInterviewForm = document.getElementById('setup-interview');
     const startButton = document.getElementById('start-interview');
-    let sessionAnswers = {};
+    let currentQuestion = null; // Store the current question
 
     startButton.addEventListener('click', setupInterview);
 
@@ -35,12 +33,15 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 console.log("Data received from server:", data);
-                if (data.question) {
+                if (data.status === "redirect") {
+                    window.location.href = data.redirect_url; // Redirect to dashboard
+                } else if (data.question) {
+                    currentQuestion = data.question; // Store the question
                     appendMessage('bot-message', data.question);
                 } else if (data.status === 'finished') {
                     inputArea.style.display = 'none';
-                    console.log("Analysis data received:", data.analysis);
-                    displayAnalysis(data.analysis);
+                    console.log("Interview finished.");
+                    window.location.href = data.redirect_url; // Redirect to dashboard if finished.
                 } else {
                     alert(data.message);
                 }
@@ -68,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    question: chatMessages.lastElementChild.previousElementSibling.querySelector('.message-content').textContent,
+                    question: currentQuestion, // Use the stored question
                     answer: message
                 })
             })
@@ -91,62 +92,23 @@ document.addEventListener('DOMContentLoaded', function() {
     function appendMessage(className, message) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', className);
-    
+
         const messageContent = document.createElement('span');
-        messageContent.classList.add('message-content'); // Add a class for easier targeting
+        messageContent.classList.add('message-content');
         messageContent.textContent = message;
-    
+
         const timestamp = document.createElement('span');
         timestamp.classList.add('timestamp');
         timestamp.textContent = new Date().toLocaleTimeString();
-    
+
         messageDiv.appendChild(messageContent);
         messageDiv.appendChild(timestamp);
-    
+
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    function displayAnalysis(analysis) {
-        console.log("displayAnalysis called with analysis:", analysis);
-        analysisSection.style.display = 'block';
-        analysisContent.innerHTML = formatAnalysis(analysis);
-    }
-
-    function formatAnalysis(data) {
-        let analysisHtml = '';
-        data.forEach(item => {
-            const question = item.question;
-            analysisHtml += `<h3>Question: ${question}</h3>`;
-            analysisHtml += `<p><strong>Answer:</strong> ${item.answer}</p>`;
-            analysisHtml += `<p><strong>Sentiment:</strong> ${item.sentiment.compound.toFixed(2)}</p>`;
-
-            analysisHtml += `<p><strong>Technical Keywords:</strong> ${item.keywords.technical.join(', ')}</p>`;
-            analysisHtml += `<p><strong>Soft Skills Keywords:</strong> ${item.keywords.soft_skills.join(', ')}</p>`;
-
-            // Corrected Technical Context Display
-            analysisHtml += `<p><strong>Technical Context:</strong><br>`;
-            for (const keyword in item.keywords.technical_context) {
-                analysisHtml += `<strong>${keyword}:</strong> ${item.keywords.technical_context[keyword].join('<br>')} <br>`;
-            }
-            analysisHtml += `</p>`;
-
-            // Corrected Soft Skills Context Display
-            analysisHtml += `<p><strong>Soft Skills Context:</strong><br>`;
-            for (const keyword in item.keywords.soft_skills_context) {
-                analysisHtml += `<strong>${keyword}:</strong> ${item.keywords.soft_skills_context[keyword].join('<br>')} <br>`;
-            }
-            analysisHtml += `</p>`;
-
-            analysisHtml += `<p><strong>Grammar Errors:</strong> ${item.grammar_errors.join('<br>')}</p>`;
-            analysisHtml += `<p><strong>Sentence Feedback:</strong> ${item.sentence_structure_feedback.join('<br>')}</p>`;
-        });
-
-        console.log("Generated analysisHtml:", analysisHtml);
-        return analysisHtml;
-    }
-    
-    // Add speech recognition functionality
+    // Speech recognition functionality
     let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (SpeechRecognition) {
@@ -156,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
         recognition.lang = 'en-US';
 
         const speechButton = document.getElementById('speech-button');
-        const userInput = document.getElementById('user-input');
         let speechActive = false;
 
         speechButton.addEventListener('click', () => {
@@ -176,12 +137,12 @@ document.addEventListener('DOMContentLoaded', function() {
             let finalTranscript = '';
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) {
-                    finalTranscript += event.results[i][0].transcript + ' '; // Add space between transcriptions
+                    finalTranscript += event.results[i][0].transcript + ' ';
                 } else {
                     interimTranscript += event.results[i][0].transcript;
                 }
             }
-            userInput.value = (userInput.value + ' ' + finalTranscript).trim() || (userInput.value + interimTranscript).trim(); // Append results
+            userInput.value = (userInput.value + ' ' + finalTranscript).trim() || (userInput.value + interimTranscript).trim();
         };
 
         recognition.onerror = (event) => {

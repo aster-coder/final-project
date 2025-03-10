@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Session Details</title>
+</head>
+<body>
+    <h1>Session Details</h1>
+    <a href="/dashboard">Back to Dashboard</a>
+    <h2>Session ID: {{ session.session_id }}</h2>
+    <p>Timestamp: {{ session.timestamp }}</p>
+    <h2>Analysis:</h2>
+    <ul>
+        {% if analysis %}
+            {% for item in analysis %}
+                <li>
+                    <strong>Question:</strong> {{ item.question }}<br>
+                    <strong>Summary:</strong> {{ item.summary }}<br>
+                    <strong>Sentiment:</strong> {{ item.sentiment }}<br>
+                    <strong>Key Phrases:</strong> {{ item.key_phrases }}<br>
+                    <strong>Technical Keywords:</strong> {{ item.keywords.technical }}<br>
+                    <strong>Soft Skills Keywords:</strong> {{ item.keywords.soft_skills }}<br>
+                    <strong>Technical Context:</strong> {{ item.keywords.technical_context }}<br>
+                    <strong>Soft Skills Context:</strong> {{ item.keywords.soft_skills_context }}<br>
+                    <strong>Grammar Errors:</strong> {{ item.grammar_errors }}<br>
+                    <strong>Sentence Feedback:</strong> {{ item.sentence_structure_feedback }}
+                </li>
+            {% endfor %}
+        {% else %}
+            <p>No analysis data available for this session.</p>
+        {% endif %}
+    </ul>
+</body>
+</html>
