@@ -6,7 +6,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const setupInterviewContainer = document.getElementById('setup-interview-container');
     const setupInterviewForm = document.getElementById('setup-interview');
     const startButton = document.getElementById('start-interview');
+    const webcamVideo = document.getElementById('webcam-video');
     let currentQuestion = null; // Store the current question
+
+    let mediaRecorder;
+    let recordedChunks = [];
+    let videoStream;
+    let eyeContactPercentages = []; // Array to store eye contact percentages
 
     startButton.addEventListener('click', setupInterview);
 
@@ -34,16 +40,25 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 console.log("Data received from server:", data);
                 if (data.status === "redirect") {
-                    window.location.href = data.redirect_url; // Redirect to dashboard
+                    console.log("Redirecting to:", data.redirect_url);
+                    if (data.redirect_url && typeof data.redirect_url === 'string') {
+                        window.location.assign(data.redirect_url);
+                    } else {
+                        console.error("Invalid redirect URL:", data.redirect_url);
+                    }
                 } else if (data.question) {
-                    currentQuestion = data.question; // Store the question
+                    currentQuestion = data.question;
                     appendMessage('bot-message', data.question);
+                } else if (data.question === null) {
+                    console.log("No more questions.");
                 } else if (data.status === 'finished') {
                     inputArea.style.display = 'none';
                     console.log("Interview finished.");
-                    window.location.href = data.redirect_url; // Redirect to dashboard if finished.
+                    window.location.href = data.redirect_url;
+                } else if (data.error) {
+                    alert(data.error);
                 } else {
-                    alert(data.message);
+                    alert("An unexpected error occurred.");
                 }
             })
             .catch(error => {
@@ -51,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('An error occurred while getting the question.');
             });
     }
+    
 
     sendButton.addEventListener('click', sendMessage);
     userInput.addEventListener('keydown', function(event) {
@@ -63,29 +79,66 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = userInput.value.trim();
         if (message) {
             appendMessage('user-message', message);
-            fetch('/submit_answer', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    question: currentQuestion, // Use the stored question
-                    answer: message
+            let videoPromise = Promise.resolve(); // Initialize videoPromise
+    
+            // Video processing and sending
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                videoPromise = new Promise(resolve => {
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                        recordedChunks = [];
+                        sendVideoToServer(blob).then(() => resolve()); // Resolve promise after video processing
+                        // Stop all tracks in the videoStream
+                        if (videoStream) {
+                            videoStream.getTracks().forEach(track => track.stop());
+                            videoStream = null; // Reset videoStream
+                        }
+                    };
+                });
+            } else if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+            }
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+                webcamVideo.srcObject = null; // Clear the video stream
+            }
+    
+            // Wait for video processing to complete before sending answer and getting next question
+            videoPromise.then(() => {
+                fetch('/submit_answer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        question: currentQuestion,
+                        answer: message
+                    })
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    getQuestion();
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error submitting answer:', error);
-                alert('An error occurred while submitting your answer.');
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Submit Answer Data: ", data);
+                    if (data.status === 'success') {
+                        getQuestion();
+                    } else if (data.status === 'redirect') {
+                        console.log("Redirecting to: ", data.redirect_url);
+                        window.location.assign(data.redirect_url);
+                    } else if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert("An unexpected error occurred.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error submitting answer:', error);
+                    alert('An error occurred while submitting your answer.');
+                });
             });
-            userInput.value = ''; // Clear the input after sending
+    
+            userInput.value = '';
         }
     }
 
@@ -108,6 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
+
     // Speech recognition functionality
     let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -120,15 +174,32 @@ document.addEventListener('DOMContentLoaded', function() {
         const speechButton = document.getElementById('speech-button');
         let speechActive = false;
 
-        speechButton.addEventListener('click', () => {
-            if (speechActive) {
-                recognition.stop();
+        speechButton.addEventListener('click', async () => {
+            if (!speechActive) {
+                try {
+                    videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    mediaRecorder = new MediaRecorder(videoStream);
+                    mediaRecorder.ondataavailable = event => {
+                        if (event.data.size > 0) {
+                            recordedChunks.push(event.data);
+                        }
+                    };
+                    mediaRecorder.start();
+                    speechActive = true;
+                    speechButton.classList.add('active');
+                    recognition.start();
+    
+                    // Stream video to the webcam-video element
+                    webcamVideo.srcObject = videoStream;
+    
+                } catch (error) {
+                    console.error('Error accessing webcam:', error);
+                    alert('Unable to access webcam.');
+                }
+            } else {
                 speechActive = false;
                 speechButton.classList.remove('active');
-            } else {
-                recognition.start();
-                speechActive = true;
-                speechButton.classList.add('active');
+                recognition.stop();
             }
         });
 
@@ -155,5 +226,26 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Speech recognition is not supported in this browser.');
         alert('Speech recognition is not supported in your browser.');
         document.getElementById('speech-button').style.display = 'none';
+    }
+
+    function sendVideoToServer(blob) {
+        return new Promise((resolve, reject) => {
+            const formData = new FormData();
+            formData.append('video', blob, 'recording.webm');
+            fetch('/process_video', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                eyeContactPercentages.push(data.eye_contact_percentage);
+                console.log("Eye contact percentages:", eyeContactPercentages);
+                resolve(); // Resolve the promise when video processing is complete
+            })
+            .catch(error => {
+                console.error('Error sending video:', error);
+                reject(error); // Reject the promise on error
+            });
+        });
     }
 });

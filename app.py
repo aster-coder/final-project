@@ -9,12 +9,18 @@ import interview_logic
 import random
 import json
 import nlp_processing
+import os
+import uuid
+import eye_contact_calculator
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = "OLRoiKV7lSxdp17s"
 DATABASE = "interview_data.db"
+
+if not os.path.exists('temp_videos'):
+    os.makedirs('temp_videos')
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -24,11 +30,16 @@ def get_db():
     return db
 
 def init_db():
+    print("Initializing database...") #debug line
     with app.app_context():
         db = get_db()
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
+        try:
+            with app.open_resource('schema.sql', mode='r') as f:
+                db.cursor().executescript(f.read())
+            db.commit()
+            print("Database initialized successfully.") #debug line
+        except Exception as e:
+            print(f"Error initializing database: {e}") #debug line
 
 @app.teardown_appcontext
 def close_connection(exception):
@@ -48,6 +59,7 @@ def login():
         cursor = db.cursor()
         cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
         user_data = cursor.fetchone()
+        print(f"Login attempt: Email={email}, User data={user_data}") #debug line
         if user_data and check_password_hash(user_data['password'], password):
             user = User(user_data['user_id'], user_data['email'], user_data['password'])
             login_user(user)
@@ -112,7 +124,7 @@ def front_page():
 def dashboard():
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT session_id, timestamp FROM interviews")
+    cursor.execute("SELECT session_id, timestamp FROM interviews ORDER BY timestamp DESC")
     sessions = cursor.fetchall()
     return render_template('dashboard.html', sessions=sessions)
 
@@ -154,44 +166,42 @@ def ask_question():
     if "question_index" not in session:
         return jsonify({"status": "finished", "analysis": {}})
 
-    if session["question_index"] > session["num_questions"]:
-        session_id = session.get('session_id')
-        interview_data = get_interview_data(session_id)
-        analysis_results = nlp_processing.process_answers([item['answer'] for item in interview_data])
-
-        # Add questions to the analysis results
-        for i, result in enumerate(analysis_results):
-            if i < len(interview_data):
-                result['question'] = interview_data[i]['question']
-
-        db = get_db()
-        cursor = db.cursor()
-        cursor.execute("UPDATE interviews SET interview_analysis = ? WHERE session_id = ?",
-                        (json.dumps(analysis_results), session_id))
-        db.commit()
-
-        return jsonify({"status": "redirect", "redirect_url": url_for('dashboard')}) #redirect to dashboard.
-    
     try:
         category_id = session["category_id"]
         asked_questions = session.get("asked_questions", [])
-        print(f"Category ID: {category_id}")
-        print(f"Asked Questions: {asked_questions}")
         question = interview_logic.get_question(category_id, asked_questions)
-        print(f"Returned Question: {question}")
 
         if question:
             session["current_question"] = question
             session["asked_questions"] = asked_questions + [question]
-            session["question_index"] += 1
             return jsonify({"question": question})
         else:
-            print("No question returned.")
             return jsonify({"question": None})
+
     except Exception as e:
         print(f"Error in ask_question: {e}")
         return jsonify({"error": str(e)})
 
+
+@app.route('/process_video', methods=['POST'])
+def process_video():
+    if 'video' not in request.files:
+        return jsonify({'error': 'No video file provided'}), 400
+
+    video_file = request.files['video']
+    if video_file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if video_file:
+        video_filename = str(uuid.uuid4()) + '.webm'
+        video_path = os.path.join('temp_videos', video_filename)
+        video_file.save(video_path)
+
+        eye_contact_percentage = eye_contact_calculator.detect_eye_contact_ratio(video_path)
+
+        os.remove(video_path)
+
+        return jsonify({'eye_contact_percentage': eye_contact_percentage})
 
 def get_interview_data(session_id):
     db = get_db()
@@ -215,16 +225,52 @@ def save_interview_data(session_id, data):
 def submit_answer():
     try:
         data = request.get_json()
-        answer = data.get("answer", "") #allow for empty answers.
+        answer = data.get("answer", "")
         question = data.get("question", "")
         session_id = session.get('session_id')
         answers = get_interview_data(session_id)
         answers.append({"question": question, "answer": answer})
         save_interview_data(session_id, answers)
+
+        # Increment question index
+        session["question_index"] = session.get("question_index", 0) + 1
+
+        # Check if it's the last question and end the interview if it is.
+        if session["question_index"] >= session["num_questions"]:
+            return end_interview()
+
         return jsonify({"status": "success"})
+
     except Exception as e:
         print(f"Error in submit_answer: {e}")
         return jsonify({"error": str(e)})
+
+def end_interview():
+    session_id = session.get('session_id')
+    interview_data = get_interview_data(session_id)
+    analysis_results = nlp_processing.process_answers([item['answer'] for item in interview_data])
+
+    for i, result in enumerate(analysis_results):
+        if i < len(interview_data):
+            result['question'] = interview_data[i]['question']
+
+    db = get_db()
+    cursor = db.cursor()
+    try:
+        cursor.execute("UPDATE interviews SET interview_analysis = ? WHERE session_id = ?",
+                            (json.dumps(analysis_results), session_id))
+        eye_contact_percentages = session.get('eye_contact_percentages', [])
+        if eye_contact_percentages:
+            average_eye_contact = sum(eye_contact_percentages) / len(eye_contact_percentages)
+        else:
+            average_eye_contact = 0
+
+        cursor.execute("UPDATE interviews SET eye_contact = ? WHERE session_id = ?", (average_eye_contact, session_id))
+        db.commit()
+    except Exception as e:
+        print(f"Database error during end interview: {e}")
+    session.pop('eye_contact_percentages', None)
+    return jsonify({"status": "redirect", "redirect_url": url_for('dashboard')})
 
 @app.route('/process_speech', methods=['POST'])
 def process_speech():
@@ -242,10 +288,6 @@ def process_speech():
         return jsonify({'status': 'success'})
     except Exception as e:
         return jsonify({'error': str(e)})
-    
-
-
-
     
 if __name__ == "__main__":
     app.run(debug=True)

@@ -4,14 +4,19 @@ import numpy as np
 import time
 import os
 
-def detect_eye_contact_ratio_continuous(video_source, interval=5):
+def detect_eye_contact_ratio(video_source, interval=5):
     """
     Detects eye contact ratio every 'interval' seconds continuously and calculates the overall average.
+    Only accepts video file paths. Does not display video.
 
     Args:
-        video_source (int or str): The video source (webcam or video file path).
+        video_source (str): The video file path.
         interval (int): The interval in seconds.
     """
+
+    if not isinstance(video_source, str) or not os.path.exists(video_source):
+        print("Error: Invalid video file path.")
+        return
 
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
@@ -19,7 +24,7 @@ def detect_eye_contact_ratio_continuous(video_source, interval=5):
     cap = cv2.VideoCapture(video_source)
 
     if not cap.isOpened():
-        print("Error: Could not open video source.")
+        print("Error: Could not open video file.")
         return
 
     all_ratios = []
@@ -35,11 +40,8 @@ def detect_eye_contact_ratio_continuous(video_source, interval=5):
             while time.time() - start_time < interval and running:
                 ret, frame = cap.read()
                 if not ret:
-                    if isinstance(video_source, str) and os.path.exists(video_source):
-                        running = False
-                        break
-                    else:
-                        break
+                    running = False
+                    break
 
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 faces = detector(gray)
@@ -57,17 +59,7 @@ def detect_eye_contact_ratio_continuous(video_source, interval=5):
                     if ear > 0.2:
                         eye_contact_frames += 1
 
-                    for n in range(36, 48):
-                        x = landmarks.part(n).x
-                        y = landmarks.part(n).y
-                        cv2.circle(frame, (x, y), 2, (0, 255, 0), -1)
-
                 total_frames += 1
-
-                cv2.imshow("Eye Contact Detection", frame)
-                if cv2.waitKey(1) & 0xFF == ord(' '):
-                    running = False
-                    break
 
             if total_frames > 0 and running:
                 eye_contact_ratio = (eye_contact_frames / total_frames) * 100
@@ -88,7 +80,6 @@ def detect_eye_contact_ratio_continuous(video_source, interval=5):
         print("\nProgram interrupted by user.")
     finally:
         cap.release()
-        cv2.destroyAllWindows()
 
         if all_ratios:
             average_eye_contact = sum(all_ratios) / len(all_ratios)
@@ -105,10 +96,6 @@ def calculate_ear(eye_points):
     return ear
 
 if __name__ == "__main__":
-    video_input = input("Enter video source (0 for webcam, or video file path): ")
-    try:
-        video_source = int(video_input)
-    except ValueError:
-        video_source = video_input
+    video_input = input("Enter video file path: ")
 
-    detect_eye_contact_ratio_continuous(video_source, interval=5)
+    detect_eye_contact_ratio(video_input, interval=5)

@@ -21,6 +21,7 @@ CREATE TABLE interviews (
     user_id INTEGER,
     interview_answers TEXT,
     interview_analysis TEXT,
+    eye_contact REAL,
     timestamp DATETIME,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
