@@ -21,12 +21,11 @@ except OSError:
     spacy.cli.download("en_core_web_sm")
     nlp = spacy.load("en_core_web_sm")
 
-# Initialize zero-shot classification pipeline
-classifier = pipeline("zero-shot-classification")
+# Initialize text generation model
+classifier = pipeline("text-generation")
 
 # Sentiment analyzer
 sia = SentimentIntensityAnalyzer()
-
 
 
 def analyze_grammar(answer):
@@ -215,7 +214,7 @@ def analyze_keyword_context(answer, keywords):
             contextual_feedback[keyword].append("Context could not be determined.")
 
     return contextual_feedback
-
+#put the keywords in a csv file instead and expand on this to have like 200-300 words
 def process_answers(answers):
     print("process_answers called with answers:", answers)
     try:

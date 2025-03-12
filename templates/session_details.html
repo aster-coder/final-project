@@ -8,6 +8,13 @@
     <a href="/dashboard">Back to Dashboard</a>
     <h2>Session ID: {{ session.session_id }}</h2>
     <p>Timestamp: {{ session.timestamp }}</p>
+
+    {% if eye_contact is defined and eye_contact is not none %}
+    <p>Eye Contact Average: {{ "%.2f"|format(eye_contact) }}%</p>
+        {% else %}
+    <p>Eye Contact Average: Not Available</p>
+        {% endif %}
+
     <h2>Analysis:</h2>
     <ul>
         {% if analysis %}

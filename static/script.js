@@ -115,7 +115,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     body: JSON.stringify({
                         question: currentQuestion,
-                        answer: message
+                        answer: message,
+                        eye_contact_percentages: eyeContactPercentages
                     })
                 })
                 .then(response => response.json())

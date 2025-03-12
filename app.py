@@ -133,12 +133,13 @@ def dashboard():
 def view_session(session_id):
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT interview_analysis, timestamp, session_id FROM interviews WHERE session_id = ?", (session_id,))
+    cursor.execute("SELECT interview_analysis, timestamp, session_id, eye_contact FROM interviews WHERE session_id = ?", (session_id,))
     result = cursor.fetchone()
     if result and result['interview_analysis']:
         try:
             analysis = json.loads(result['interview_analysis'])
-            return render_template('session_details.html', analysis=analysis, session=result)
+            eye_contact = result['eye_contact']  # Get the eye_contact value
+            return render_template('session_details.html', analysis=analysis, session=result, eye_contact=eye_contact) #Pass eye_contact
         except json.JSONDecodeError as e:
             print(f"JSON Decode Error: {e}")
             return "Error decoding session analysis."
@@ -150,6 +151,7 @@ def index():
     if current_user.is_authenticated:
         if request.method == "POST":
             session["num_questions"] = int(request.form["num_questions"]) * 5
+            print(session["num_questions"])
             session["category_id"] = int(request.form["category_id"])
             session["answers"] = []
             session["question_index"] = 0
@@ -227,6 +229,8 @@ def submit_answer():
         data = request.get_json()
         answer = data.get("answer", "")
         question = data.get("question", "")
+        eye_contact_percentages = data.get("eye_contact_percentages", []) 
+        session['eye_contact_percentages'] = eye_contact_percentages 
         session_id = session.get('session_id')
         answers = get_interview_data(session_id)
         answers.append({"question": question, "answer": answer})
@@ -258,14 +262,15 @@ def end_interview():
     cursor = db.cursor()
     try:
         cursor.execute("UPDATE interviews SET interview_analysis = ? WHERE session_id = ?",
-                            (json.dumps(analysis_results), session_id))
+                                    (json.dumps(analysis_results), session_id))
         eye_contact_percentages = session.get('eye_contact_percentages', [])
+        print(f"Eye contact percentages from session: {eye_contact_percentages}") #debug line
         if eye_contact_percentages:
-            average_eye_contact = sum(eye_contact_percentages) / len(eye_contact_percentages)
+            eye_contact = sum(eye_contact_percentages) / len(eye_contact_percentages)
+            print(f"Calculated eye contact average: {eye_contact}") #debug line
         else:
-            average_eye_contact = 0
-
-        cursor.execute("UPDATE interviews SET eye_contact = ? WHERE session_id = ?", (average_eye_contact, session_id))
+            eye_contact = 0
+        cursor.execute("UPDATE interviews SET eye_contact = ? WHERE session_id = ?", (eye_contact, session_id))
         db.commit()
     except Exception as e:
         print(f"Database error during end interview: {e}")
