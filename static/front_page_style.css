@@ -1,0 +1,53 @@
+/*Front page css design*/
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #010c3b;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+li {
+    float: right;
+}
+li a {
+    display: block;
+    color: rgb(236, 249, 241);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+
+li a:hover {
+    background-color: #111;
+}
+body {
+    margin: 0; /*Recommended to add this also*/
+}
+
+.image-container {
+    background-color: rgb(65, 166, 255);
+    text-align: center; /* This will center the image inside the div */
+    padding-top:100px;
+    padding-bottom: 0; /*removes bottom padding*/
+    display: flex; /*Use flexbox*/
+    flex-direction: row; /*Stack items vertically*/
+    justify-content: flex-start; /*Align item to bottom*/
+}
+.image-container img{
+    align-self: center; /*Centers the image horizontally*/
+    margin-top:60px
+}
+
+footer {
+    text-align: center;
+    padding: 3px;
+    background-color:#010c3b;
+    color: white;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}

@@ -1,0 +1,60 @@
+/*login/register style */
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensure the body takes full viewport height */
+    margin: 0; /* Remove default body margin */
+  }
+  
+  /* Optional: If your form is in a container */
+.login-container { 
+border: 1px solid #ccc;
+border-radius: 5px; 
+text-align: center;
+}
+.login-icon {
+    width: 80px; /* Adjust size as needed */
+    height: 80px;
+    margin-bottom: 20px; /* Space between icon and form */
+}
+.login-container form {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.login-container input[type="email"],
+.login-container input[type="password"] {
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.login-container button {
+    background-color: #007bff; /* Blue button */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+}
+
+.login-container button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.login-container a {
+    margin-top: 20px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+}

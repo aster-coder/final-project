@@ -2,13 +2,18 @@
 <head>
     <title>Login</title>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" sizes="32x32">
+    <link rel="stylesheet" href="{{ url_for('static', filename='login_style.css') }}">
 </head>
 <body>
+    <img src="{{ url_for('static', filename='small_icon_draft.png') }}" alt="User Icon" class="login-icon">
+    <div class ="login-container">
     <form method="POST" action="/login">
         <input type="email" name="email" placeholder="Email" required><br>
         <input type="password" name="password" placeholder="Password" required><br>
         <button type="submit">Login</button>
     </form>
-    <a href="/register">Register</a>
+    <a href="/register">Don't have an account? Register here</a><br>
+    <a href="{{ url_for('front_page') }}">Back to front page</a>
+</div>
 </body>
 </html>

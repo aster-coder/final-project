@@ -3,12 +3,22 @@
 <head>
     <title>JobCoach:Your friendly AI job interview helper</title>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" sizes="32x32">
+    <link rel="stylesheet" href="{{ url_for('static', filename='front_page_style.css') }}">
 </head>
 <body>
-    <h1>Welcome to the Interview Chatbot</h1>
+    <div>
+    <ul>
+        <li style="float:left"><a style="font-size:24px">Welcome to the Interview Chatbot</a></li>
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+        <li><a href="{{ url_for('register') }}">Register</a></li>
+    </ul>
+</div>
+    <div class="image-container">
     <img src="{{ url_for('static', filename='bot_clipboard_smile.png') }}" alt ="Image of a cartoony robot smiling and holiding a clipboard, with a speech bubble saying a tick mark and a cross" style ="width: 500px;height:400px">
-    <p>Please choose an option:</p>
-    <a href="{{ url_for('login') }}"><button>Login</button></a>
-    <a href="{{ url_for('register') }}"><button>Register</button></a>
+    </div>
+
+<footer>
+    <p>Copyright 2025 by Astra Noronha   |<a href="mailto:AN1143@live.mdx.ac.uk">Contact</a></p>
+</footer>
 </body>
 </html>
