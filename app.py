@@ -4,7 +4,6 @@
 from flask import Flask, render_template, request, jsonify, session, g, redirect, url_for
 import sqlite3
 import datetime
-import data_handling
 import interview_logic
 import random
 import json
@@ -117,6 +116,7 @@ def logout():
 
 @app.route('/front_page')
 def front_page():
+    print(url_for('static', filename='favicon.ico'))
     return render_template('front_page.html')
 
 @app.route('/dashboard')
@@ -230,7 +230,7 @@ def submit_answer():
         answer = data.get("answer", "")
         question = data.get("question", "")
         eye_contact_percentages = data.get("eye_contact_percentages", []) 
-        session['eye_contact_percentages'] = eye_contact_percentages 
+        session['eye_contact_percentages'] = eye_contact_percentages #add this line
         session_id = session.get('session_id')
         answers = get_interview_data(session_id)
         answers.append({"question": question, "answer": answer})

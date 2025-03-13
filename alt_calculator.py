@@ -1,3 +1,6 @@
+#for testing and comparison between the two eye calculation methods
+#i think its possible that i coudl use a speech recognition pipeline maybe, but since i'm getting the data from the front end thats not reliable
+
 import cv2
 import numpy as np
 import time
