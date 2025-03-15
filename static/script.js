@@ -15,6 +15,18 @@ document.addEventListener('DOMContentLoaded', function() {
     let eyeContactPercentages = []; // Array to store eye contact percentages
 
     startButton.addEventListener('click', setupInterview);
+    
+    async function initializeWebcam(){
+        try {
+            videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+            webcamVideo.srcObject = videoStream;
+        } catch (error) {
+            console.error('Error accessing webcam:', error);
+            alert('Unable to access webcam.');
+        }
+    }
+
+    initializeWebcam();
 
     function setupInterview() {
         const formData = new FormData(setupInterviewForm);

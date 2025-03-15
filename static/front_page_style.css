@@ -18,33 +18,110 @@ li a {
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
-  }
+}
 
 li a:hover {
     background-color: #111;
 }
 body {
-    margin: 0; /*Recommended to add this also*/
+    margin: 0; 
 }
 
 .image-container {
     background-color: rgb(65, 166, 255);
-    text-align: center; /* This will center the image inside the div */
-    padding-top:100px;
-    padding-bottom: 0; /*removes bottom padding*/
-    display: flex; /*Use flexbox*/
-    flex-direction: row; /*Stack items vertically*/
-    justify-content: flex-start; /*Align item to bottom*/
+    text-align: center;
+    padding-top: 100px;
+    padding-bottom: 0px; 
+    display: flex;
+    justify-content: flex-start;
 }
-.image-container img{
-    align-self: center; /*Centers the image horizontally*/
-    margin-top:60px
+
+.image-container .image-text-wrapper {
+    display: flex;
+    align-items: center;
+    width: 90%;
+    max-width: 1200px;
+}
+
+.image-container .image-text-wrapper img {
+    max-width: 500px;
+    height: auto;
+    margin-right: 20px;
+}
+
+.image-container .text-content {
+    text-align: left;
+}
+
+.image-container .text-content h2 {
+    margin-bottom: 10px;
+}
+
+.right-image-container {
+    background-color: white;
+    text-align: center;
+    padding-top: 100px;
+    padding-bottom: 0px; 
+    display: flex;
+    justify-content: flex-end;
+}
+
+.right-image-container .image-text-wrapper {
+    display: flex;
+    align-items: center;
+    width: 90%;
+    max-width: 1200px;
+    flex-direction: row-reverse;
+}
+
+.right-image-container .image-text-wrapper img {
+    max-width: 500px;
+    height: auto;
+    margin-left: 20px;
+}
+
+.right-image-container .text-content {
+    text-align: left;
+}
+
+.right-image-container .text-content h2 {
+    margin-bottom: 10px;
+}
+
+.bottom-image-container {
+    background-color: rgb(65, 166, 255);
+    text-align: center;
+    padding-top: 100px;
+    padding-bottom: 50px; /* Kept at 50px */
+    display: flex;
+    justify-content: flex-start;
+}
+
+.bottom-image-container .image-text-wrapper {
+    display: flex;
+    align-items: center;
+    width: 90%;
+    max-width: 1200px;
+}
+
+.bottom-image-container .image-text-wrapper img {
+    max-width: 500px;
+    height: auto;
+    margin-right: 20px;
+}
+
+.bottom-image-container .text-content {
+    text-align: left;
+}
+
+.bottom-image-container .text-content h2 {
+    margin-bottom: 10px;
 }
 
 footer {
     text-align: center;
     padding: 3px;
-    background-color:#010c3b;
+    background-color: #010c3b;
     color: white;
     position: fixed;
     left: 0;

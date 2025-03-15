@@ -1,5 +1,6 @@
-<!--Html website-->
 <!DOCTYPE html>
+<meta name="viewport" content="width:device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
 <html>
 <head>
     <title>Job Interview Chatbot</title>
@@ -7,27 +8,34 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <a href="/logout">Logout</a>
-    <div id="webcam-container">
-        <video id="webcam-video" autoplay playsinline style="width: 320px; height: 240px;"></video>
-    </div>
     <div class="chat-container">
         <div id="setup-interview-container">
             <form id="setup-interview">
-                <label for="num_questions">Interview Length:</label>
-                <select name="num_questions" id="interview_length">
-                    <option value="1">Short (5 questions)</option>
-                    <option value="2">Medium (10 questions)</option>
-                </select>
-                <label for="category_id">Interview Category:</label>
-                <select name="category_id" id="interview_category">
-                    <option value="1">General</option>
-                    <option value="2">Sales</option>
-                    <option value="3">IT</option>
-                    <option value="4">CS</option>
-                </select>
-                <button type="button" id="start-interview">Start Interview</button>
+                <fieldset>
+                    <legend>Interview Setup</legend>
+                    <label for="interview_length">Interview Length:</label>
+                    <select name="num_questions" id="interview_length" aria-labelledby="interview_length_label">
+                        <option value="1">Short (5 questions)</option>
+                        <option value="2">Medium (10 questions)</option>
+                    </select>
+                    <label id="interview_length_label" for="interview_length" style="display: none;">Interview Length:</label>
+
+                    <label for="interview_category">Interview Category:</label>
+                    <select name="category_id" id="interview_category" aria-labelledby="interview_category_label">
+                        <option value="1">General</option>
+                        <option value="2">Sales</option>
+                        <option value="3">IT</option>
+                        <option value="4">CS</option>
+                    </select>
+                    <label id="interview_category_label" for="interview_category" style="display: none;">Interview Category:</label>
+
+                    <button type="button" id="start-interview">Start Interview</button>
+                </fieldset>
             </form>
+        </div>
+        <div id="webcam-container">
+            <video id="webcam-video" autoplay playsinline style="width: 320px; height: 240px;"></video>
+            <p id="webcam-instructions">Make sure you're in a well lit environment alone to ensure the bot can detect your eye position.</p>
         </div>
 
         <div class="chat-messages" id="chat-messages">
@@ -37,10 +45,9 @@
             <button id="send-button">Send</button>
             <button id="speech-button">Speak</button>
         </div>
-        <div id="analysis-section" style="display: none;">
-            <h2>Interview Analysis Report</h2>
-            <div id="analysis-content"></div>
-        </div>
+    </div>
+    <div id="logout-container">
+        <a href="/logout">Logout</a>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>

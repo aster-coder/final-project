@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
 <html>
 <head>
     <title>JobCoach:Your friendly AI job interview helper</title>
@@ -7,18 +9,42 @@
 </head>
 <body>
     <div>
-    <ul>
-        <li style="float:left"><a style="font-size:24px">Welcome to the Interview Chatbot</a></li>
-        <li><a href="{{ url_for('login') }}">Login</a></li>
-        <li><a href="{{ url_for('register') }}">Register</a></li>
-    </ul>
-</div>
+        <ul>
+            <li style="float:left"><a style="font-size:24px">JobCoach:A friendly interview chatbot</a></li>
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('register') }}">Register</a></li>
+        </ul>
+    </div>
     <div class="image-container">
-    <img src="{{ url_for('static', filename='bot_clipboard_smile.png') }}" alt ="Image of a cartoony robot smiling and holiding a clipboard, with a speech bubble saying a tick mark and a cross" style ="width: 500px;height:400px">
+        <div class="image-text-wrapper">
+            <img src="{{ url_for('static', filename='bot_clipboard_smile.png') }}" alt ="Image of a cartoony robot smiling and holiding a clipboard, with a speech bubble saying a tick mark and a cross" style ="width: 500px;height:400px">
+            <div class="text-content">
+                <h2>Struggling with your interviews?</h2>
+                <p>Placeholder text</p>
+            </div>
+        </div>
+    </div>
+    <div class="right-image-container">
+        <div class="image-text-wrapper">
+            <img src="{{ url_for('static', filename='bot_question_face.png') }}" alt ="Image of a cartoony robot holidng a finger up to its face with a question mark on its screen face" style ="width: 500px;height:400px">
+            <div class="text-content">
+                <h2>Use guide</h2>
+                <p>Steps for how to use the interview bot, this will have a button to create an account and start their interview</p>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-image-container">
+        <div class="image-text-wrapper">
+            <img src="{{ url_for('static', filename='bot_creator_repair.png') }}" alt ="Image of a cartoony human with a strained smile sweating, holding a wrench with one hand on their face next to a cartoony robot with a side panel on its screen head open, revealing wires, and a distressed look on its screen face" style ="width: 500px;height:400px">
+            <div class="text-content">
+                <h2>About</h2>
+                <p>Small section explaining who I am and the project</p>
+            </div>
+        </div>
     </div>
 
-<footer>
-    <p>Copyright 2025 by Astra Noronha   |<a href="mailto:AN1143@live.mdx.ac.uk">Contact</a></p>
-</footer>
+    <footer>
+        <p>Copyright 2025 by Astra Noronha  |<a href="mailto:AN1143@live.mdx.ac.uk">Contact</a></p>
+    </footer>
 </body>
 </html>
