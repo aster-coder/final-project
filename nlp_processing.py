@@ -15,15 +15,14 @@ except LookupError:
 
 # Load spaCy model
 try:
-    nlp = spacy.load("en_core_web_trf")
+    nlp = spacy.load("en_core_web_sm")
 except OSError:
     print("Downloading spaCy model...")
     spacy.cli.download("en_core_web_sm")
     nlp = spacy.load("en_core_web_sm")
 
-# Initialize text generation model
-classifier = pipeline("text-generation")
-
+# Initialize text summarization model
+summarizer = pipeline("summarization", model="t5-large")
 # Sentiment analyzer
 sia = SentimentIntensityAnalyzer()
 
@@ -214,7 +213,35 @@ def analyze_keyword_context(answer, keywords):
             contextual_feedback[keyword].append("Context could not be determined.")
 
     return contextual_feedback
-#put the keywords in a csv file instead and expand on this to have like 200-300 words
+
+def generate_feedback(analysis_result):
+    """Generates feedback using BART summarization."""
+    feedback_text = ""
+
+    # Build the feedback text from analysis results (similar to your previous code)
+    if analysis_result["grammar_errors"]:
+        feedback_text += "Grammar errors: " + ", ".join(analysis_result["grammar_errors"]) + ". "
+    if analysis_result["sentence_structure_feedback"]:
+        feedback_text += "Sentence structure feedback: " + ", ".join(analysis_result["sentence_structure_feedback"]) + ". "
+    for keyword_type in ["technical_context", "soft_skills_context"]:
+        for keyword, context_info in analysis_result["keywords"][keyword_type].items():
+            if context_info:
+                feedback_text += f"Regarding '{keyword}': " + " ".join(context_info[0:2]) + ". "
+    sentiment = analysis_result["sentiment"]
+    if sentiment["compound"] >= 0.05:
+        feedback_text += "Your answer conveys a positive sentiment."
+    elif sentiment["compound"] <= -0.05:
+        feedback_text += "Your answer conveys a negative sentiment."
+    else:
+        feedback_text += "Your answer conveys a neutral sentiment."
+
+    try:
+        summary = summarizer(feedback_text, max_length=200, min_length=30, do_sample=False)[0]['summary_text']
+        return summary
+    except Exception as e:
+        print(f"Error during summarization: {e}")
+        return "Feedback summarization failed."
+
 def process_answers(answers):
     print("process_answers called with answers:", answers)
     try:
@@ -266,7 +293,7 @@ def process_answers(answers):
             technical_context = analyze_keyword_context(answer, technical_keywords)
             soft_skills_context = analyze_keyword_context(answer, soft_skills_keywords)
 
-            analysis_results.append({
+            analysis_result = {
                 "answer": answer,
                 "sentiment": sentiment,
                 "keywords": {
@@ -274,17 +301,18 @@ def process_answers(answers):
                     "soft_skills": found_soft_skills,
                     "technical_context": technical_context,
                     "soft_skills_context": soft_skills_context,
-
                 },
                 "grammar_errors": grammar_errors,
                 "sentence_structure_feedback": sentence_structure_feedback,
-            })
+            }
+
+            # Generate and add feedback to the result
+            analysis_result["generated_feedback"] = generate_feedback(analysis_result)
+
+            analysis_results.append(analysis_result)
+
         print("analysis_results:", analysis_results)
         return analysis_results
     except Exception as e:
         print(f"An error occurred: {e}")
-        return []
-
-    except Exception as e:
-        print(f"Error in process_answers: {e}")
         return []

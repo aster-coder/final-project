@@ -1,0 +1,113 @@
+/* session_details_style.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 20px auto;
+    max-width: 800px; /* Limit width for report-like layout */
+    line-height: 1.6;
+    background-color: #f9f9f9;
+    color: #333;
+    padding: 20px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #007bff;
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+h2 {
+    color: #333;
+    margin-top: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+p {
+    margin-bottom: 15px;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 20px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: #fff;
+    border: 1px solid #eee;
+    margin-bottom: 25px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+li strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: 600;
+}
+
+li strong:first-child { /* Style the first strong element (Question:) */
+    margin-top: 10px; /* Add space before the question */
+}
+
+li strong:not(:first-child) { /* Style all strong elements except the first one*/
+    margin-top: 15px; /* Add space before other strong elements */
+}
+
+li p {
+    margin-bottom: 0;
+}
+
+/* Specific section styling */
+li > strong:nth-child(2) + p { /* Answer paragraph */
+    background-color: #f0f8ff;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+li > strong:nth-child(3) + p { /* Generated Feedback Paragraph */
+    background-color: #f0fff0;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    body {
+        max-width: 95%; /* Adjust width for smaller screens */
+        margin: 10px auto;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    h2 {
+        font-size: 1.4em;
+    }
+
+    li {
+        padding: 15px;
+    }
+}

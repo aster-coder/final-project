@@ -6,12 +6,13 @@
 <head>
     <title>Session Details</title>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" sizes="32x32">
+    <link rel="stylesheet" href="{{ url_for('static', filename='session_details_style.css') }}">
 </head>
 <body>
-    <h1>Session Details</h1>
+    <h1>Interview Analysis Report</h1>
     <a href="/dashboard">Back to Dashboard</a>
-    <h2>Session ID: {{ session.session_id }}</h2>
-    <p>Timestamp: {{ session.timestamp }}</p>
+    <!--<h2>Session ID: {{ session.session_id }}</h2>
+    <p>Timestamp: {{ session.timestamp }}</p> -->
 
     {% if eye_contact is defined and eye_contact is not none %}
     <p>Eye Contact Average: {{ "%.2f"|format(eye_contact) }}%</p>
@@ -25,15 +26,16 @@
             {% for item in analysis %}
                 <li>
                     <strong>Question:</strong> {{ item.question }}<br>
-                    <strong>Summary:</strong> {{ item.summary }}<br>
-                    <strong>Sentiment:</strong> {{ item.sentiment }}<br>
+                    <strong>Answer:</strong> {{ item.answer }}<br>
+                    <!--<strong>Sentiment:</strong> {{ item.sentiment }}<br>
                     <strong>Key Phrases:</strong> {{ item.key_phrases }}<br>
                     <strong>Technical Keywords:</strong> {{ item.keywords.technical }}<br>
                     <strong>Soft Skills Keywords:</strong> {{ item.keywords.soft_skills }}<br>
                     <strong>Technical Context:</strong> {{ item.keywords.technical_context }}<br>
                     <strong>Soft Skills Context:</strong> {{ item.keywords.soft_skills_context }}<br>
                     <strong>Grammar Errors:</strong> {{ item.grammar_errors }}<br>
-                    <strong>Sentence Feedback:</strong> {{ item.sentence_structure_feedback }}
+                    <strong>Sentence Feedback:</strong> {{ item.sentence_structure_feedback }}<br> -->
+                    <strong>Generated Feedback:</strong> {{ item.generated_feedback}}
                 </li>
             {% endfor %}
         {% else %}

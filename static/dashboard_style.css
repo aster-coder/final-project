@@ -1,0 +1,99 @@
+/* static/dashboard_style.css */
+
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background-color: #007bff;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid white;
+    border-radius: 5px;
+}
+
+main {
+    padding: 2rem;
+}
+
+.session-grid {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 columns */
+    gap: 1rem; /* spacing between items */
+}
+
+.session-box {
+    background-color: #a8e0a8; /* light green */
+    border: 1px solid #8fbc8f; /* darker green border */
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 150px; /* or whatever minimum height you want */
+    border-radius: 8px;
+}
+
+.session-info {
+    margin-bottom: 1rem;
+}
+
+.view-details-button {
+    background-color: #28a745;
+    color: white;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.view-details-button:hover {
+    background-color: #218838;
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: #eee;
+    border-top: 1px solid #ddd;
+}
+
+/* Responsive adjustments if needed */
+@media (max-width: 1200px) {
+    .session-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+@media (max-width: 992px) {
+    .session-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media (max-width: 768px) {
+    .session-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 576px) {
+    .session-grid {
+        grid-template-columns: 1fr;
+    }
+}
