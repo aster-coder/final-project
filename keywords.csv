@@ -1,0 +1,287 @@
+keyword,type
+python,technical
+javascript,technical
+sql,technical
+database,technical
+api,technical
+cloud,technical
+aws,technical
+azure,technical
+gcp,technical
+docker,technical
+kubernetes,technical
+react,technical
+angular,technical
+vue,technical
+node.js,technical
+java,technical
+c++,technical
+c#,technical
+git,technical
+version control,technical
+algorithm,technical
+data structure,technical
+testing,technical
+unit test,technical
+integration test,technical
+debugging,technical
+performance,technical
+optimization,technical
+security,technical
+restful,technical
+graphql,technical
+machine learning,technical
+deep learning,technical
+ai,technical
+artificial intelligence,technical
+data science,technical
+big data,technical
+hadoop,technical
+spark,technical
+linux,technical
+windows,technical
+macos,technical
+frontend,technical
+backend,technical
+fullstack,technical
+devops,technical
+ci/cd,technical
+agile,technical
+scrum,technical
+microservices,technical
+object-oriented,technical
+functional programming,technical
+design patterns,technical
+framework,technical
+library,technical
+data modeling,technical
+nosql,technical
+relational database,technical
+etl,technical
+data warehousing,technical
+cybersecurity,technical
+networking,technical
+operating systems,technical
+virtualization,technical
+containerization,technical
+mobile development,technical
+ios,technical
+android,technical
+embedded systems,technical
+firmware,technical
+iot,technical
+blockchain,technical
+cryptography,technical
+code review,technical
+refactoring,technical
+software architecture,technical
+system design,technical
+ui/ux,technical
+web development,technical
+mobile app,technical
+software development,technical
+programming,technical
+coding,technical
+scripting,technical
+data analysis,technical
+data visualization,technical
+cloud computing,technical
+serverless,technical
+automation,technical
+communication,soft
+teamwork,soft
+leadership,soft
+problem-solving,soft
+critical thinking,soft
+adaptability,soft
+collaboration,soft
+time management,soft
+organization,soft
+initiative,soft
+creativity,soft
+innovation,soft
+decision-making,soft
+conflict resolution,soft
+negotiation,soft
+presentation,soft
+public speaking,soft
+interpersonal skills,soft
+emotional intelligence,soft
+active listening,soft
+empathy,soft
+flexibility,soft
+resilience,soft
+accountability,soft
+proactive,soft
+self-motivation,soft
+customer service,soft
+client relations,soft
+mentoring,soft
+coaching,soft
+strategic thinking,soft
+project management,soft
+risk management,soft
+change management,soft
+persuasion,soft
+influence,soft
+delegation,soft
+prioritization,soft
+planning,soft
+execution,soft
+learning agility,soft
+growth mindset,soft
+professionalism,soft
+ethical,soft
+integrity,soft
+dependability,soft
+reliability,soft
+resourcefulness,soft
+self-awareness,soft
+stress management,soft
+team building,soft
+knowledge sharing,soft
+feedback,soft
+constructive criticism,soft
+openness,soft
+curiosity,soft
+detail-oriented,soft
+results-oriented,soft
+process improvement,soft
+efficiency,soft
+customer focus,soft
+stakeholder management,soft
+relationship building,soft
+networking,soft
+cross-functional,soft
+interdisciplinary,soft
+self-improvement,soft
+continuous learning,soft
+goal-oriented,soft
+deadline-driven,soft
+performance-driven,soft
+solution-oriented,soft
+positive attitude,soft
+work ethic,soft
+commitment,soft
+dedication,soft
+passion,soft
+drive,soft
+enthusiasm,soft
+react native,technical
+typescript,technical
+rest api,technical
+software engineering,technical
+data engineering,technical
+data pipelines,technical
+data lakes,technical
+data streams,technical
+etl pipelines,technical
+data governance,technical
+data security,technical
+data integrity,technical
+data quality,technical
+data modeling,technical
+data architecture,technical
+system architecture,technical
+cloud architecture,technical
+network architecture,technical
+software design,technical
+user interface,technical
+user experience,technical
+web design,technical
+mobile design,technical
+database design,technical
+network design,technical
+security design,technical
+software testing,technical
+automated testing,technical
+manual testing,technical
+performance testing,technical
+security testing,technical
+usability testing,technical
+a/b testing,technical
+continuous integration,technical
+continuous delivery,technical
+devops automation,technical
+infrastructure as code,technical
+configuration management,technical
+container orchestration,technical
+serverless computing,technical
+microservices architecture,technical
+api design,technical
+api development,technical
+api integration,technical
+api security,technical
+data warehousing,technical
+data mining,technical
+natural language processing,technical
+computer vision,technical
+robotic process automation,technical
+digital marketing,technical
+social media marketing,technical
+search engine optimization,technical
+content marketing,technical
+email marketing,technical
+marketing automation,technical
+financial modeling,technical
+risk analysis,technical
+data analysis,technical
+statistical analysis,technical
+business intelligence,technical
+project planning,technical
+project execution,technical
+project monitoring,technical
+project control,technical
+product management,technical
+product design,technical
+product development,technical
+product marketing,technical
+business analysis,technical
+market research,technical
+competitive analysis,technical
+strategic planning,technical
+business strategy,technical
+operations management,technical
+supply chain management,technical
+human resources,technical
+talent acquisition,technical
+employee training,technical
+legal compliance,technical
+contract management,technical
+risk assessment,technical
+financial reporting,technical
+budgeting,technical
+forecasting,technical
+accounting,technical
+auditing,technical
+data compliance,technical
+regulation,technical
+policy development,technical
+technical documentation,technical
+knowledge management,technical
+information architecture,technical
+content management,technical
+user documentation,technical
+technical writing,technical
+public relations,technical
+media relations,technical
+graphic design,technical
+video editing,technical
+audio editing,technical
+animation,technical
+photography,technical
+illustration,technical
+translation,technical
+localization,technical
+interpreting,technical
+microsoft office,technical
+microsoft word,technical
+microsoft excel,technical
+microsoft powerpoint,technical
+microsoft outlook,technical
+microsoft access,technical
+microsoft teams,technical
+google workspace,technical
+google docs,technical
+google sheets,technical
+google slides,technical

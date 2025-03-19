@@ -1,6 +1,7 @@
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import spacy
+import csv
 
 # Download NLTK data (only once)
 try:
@@ -20,7 +21,7 @@ except OSError:
     print("Downloading spaCy model...")
     spacy.cli.download("en_core_web_sm")
     nlp = spacy.load("en_core_web_sm")
-    
+
 # Initialize text summarization model
 #summarizer = pipeline("summarization", model="t5-large")
 # Sentiment analyzer
@@ -158,88 +159,44 @@ def build_coherence_feedback(coherence_analysis):
     if coherence_analysis and coherence_analysis["feedback"]:
         feedback_text += "Coherence feedback: " + ", ".join(coherence_analysis["feedback"]) + ". "
     return feedback_text
-'''
-def generate_feedback(analysis_result):
-    """Generates focused feedback using summarization for job interviews."""
-    prompt = "Provide a concise summary of the candidate's interview response, focusing on keyword usage, sentiment, and clarity. "
 
-    if analysis_result["grammar_errors"]:
-        prompt += "Grammar errors: " + ", ".join(analysis_result["grammar_errors"]) + ". "
-
-    for keyword_type in ["technical_context", "soft_skills_context"]:
-        for keyword, context_info in analysis_result["keywords"][keyword_type].items():
-            if context_info:
-                prompt += f"Regarding '{keyword}': " + " ".join(context_info[0:2]) + ". "
-
-    if analysis_result["filler_words"]:
-        prompt += "Filler words found: " + ", ".join(analysis_result["filler_words"]) + ". "
-
-    sentiment = analysis_result["sentiment"]
-    if sentiment["compound"] >= 0.2:
-        prompt += "Strong positive sentiment detected. "
-    elif 0.05 <= sentiment["compound"] < 0.2:
-        prompt += "Positive sentiment detected. "
-    elif sentiment["compound"] <= -0.2:
-        prompt += "Strong negative sentiment detected. "
-    elif sentiment["compound"] <= -0.05:
-        prompt += "Negative sentiment detected. "
-    else:
-        prompt += "Neutral sentiment detected. "
-
-    prompt += build_coherence_feedback(analysis_result["coherence"])
-
+def load_keywords(filepath="keywords.csv"):
+    """Loads keywords from a CSV file."""
+    technical_keywords = []
+    soft_skills_keywords = []
     try:
-        summary = summarizer(prompt, max_length=180, min_length=50, do_sample=False)[0]['summary_text']
-        # Post-processing: remove the prompt using regex
-        summary = re.sub(r"^(Provide a concise summary|provide a concise summary|A concise summary|a concise summary) of the candidate's interview response, focusing on keyword usage, sentiment, and clarity\.? ?", "", summary).strip()
-        return summary
-    except Exception as e:
-        print(f"Error during summarization: {e}")
-        return "Feedback summarization failed."
-'''
+        with open(filepath, 'r', newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                keyword = row['keyword'].strip().lower() #make lowercase for consistency
+                keyword_type = row['type'].strip().lower() #make lowercase for consistency
+                if keyword_type == 'technical':
+                    technical_keywords.append(keyword)
+                elif keyword_type == 'soft':
+                    soft_skills_keywords.append(keyword)
+    except FileNotFoundError:
+        print(f"Error: Keyword file '{filepath}' not found.")
+        return [], []
+    except KeyError:
+        print("Error: CSV file must have 'keyword' and 'type' columns.")
+        return [], []
+    return technical_keywords, soft_skills_keywords
+
 def process_answers(answers):
     """Processes answers and generates analysis results."""
     analysis_results = []
-    technical_keywords = [
-        "python", "javascript", "sql", "database", "api", "cloud", "aws", "azure", "gcp",
-        "docker", "kubernetes", "react", "angular", "vue", "node.js", "java", "c++", "c#",
-        "git", "version control", "algorithm", "data structure", "testing", "unit test",
-        "integration test", "debugging", "performance", "optimization", "security",
-        "restful", "graphql", "machine learning", "deep learning", "ai", "artificial intelligence",
-        "data science", "big data", "hadoop", "spark", "linux", "windows", "macos",
-        "frontend", "backend", "fullstack", "devops", "ci/cd", "agile", "scrum", "microservices",
-        "object-oriented", "functional programming", "design patterns", "framework", "library",
-        "data modeling", "nosql", "relational database", "etl", "data warehousing", "cybersecurity",
-        "networking", "operating systems", "virtualization", "containerization", "mobile development",
-        "ios", "android", "embedded systems", "firmware", "iot", "blockchain", "cryptography",
-        "code review", "refactoring", "software architecture", "system design", "ui/ux",
-        "web development", "mobile app", "software development", "programming", "coding", "scripting",
-        "data analysis", "data visualization", "cloud computing", "serverless", "automation"
-    ]
-    soft_skills_keywords = [
-        "communication", "teamwork", "leadership", "problem-solving", "critical thinking",
-        "adaptability", "collaboration", "time management", "organization", "initiative",
-        "creativity", "innovation", "decision-making", "conflict resolution", "negotiation",
-        "presentation", "public speaking", "interpersonal skills", "emotional intelligence",
-        "active listening", "empathy", "flexibility", "resilience", "accountability",
-        "proactive", "self-motivation", "customer service", "client relations", "mentoring",
-        "coaching", "strategic thinking", "project management", "risk management", "change management",
-        "persuasion", "influence", "delegation", "prioritization", "planning", "execution",
-        "learning agility", "growth mindset", "professionalism", "ethical", "integrity",
-        "dependability", "reliability", "resourcefulness", "self-awareness", "stress management",
-        "team building", "knowledge sharing", "feedback", "constructive criticism", "openness",
-        "curiosity", "detail-oriented", "results-oriented", "process improvement", "efficiency",
-        "customer focus", "stakeholder management", "relationship building", "networking",
-        "cross-functional", "interdisciplinary", "self-improvement", "continuous learning",
-        "goal-oriented", "deadline-driven", "performance-driven", "solution-oriented", "positive attitude",
-        "work ethic", "commitment", "dedication", "passion", "drive", "enthusiasm"
-    ]
+    technical_keywords, soft_skills_keywords = load_keywords()
+
+    if not technical_keywords and not soft_skills_keywords:
+        return []  # Return empty if no keywords loaded
+
     filler_words = ["like", "basically", "actually", "just", "you know", "kind of", "sort of"]
 
     for answer in answers:
         doc = nlp(answer)
         sentiment = sia.polarity_scores(answer)
         grammar_errors = analyze_grammar(doc)
+        sentence_structure_feedback = analyze_sentence_structure(doc) # added sentence structure analysis
         technical_context = analyze_keyword_context(doc, technical_keywords)
         soft_skills_context = analyze_keyword_context(doc, soft_skills_keywords)
         found_filler_words = find_filler_words(doc, filler_words)
@@ -254,6 +211,9 @@ def process_answers(answers):
 
         if found_filler_words:
             combined_feedback += f"Filler words: {', '.join(found_filler_words)}. "
+
+        if sentence_structure_feedback: # added sentence structure feedback
+            combined_feedback += f"Sentence Structure feedback: {', '.join(sentence_structure_feedback)}. "
 
         if coherence["feedback"]:
             combined_feedback += f"Coherence feedback: {', '.join(coherence['feedback'])}. "
@@ -278,4 +238,4 @@ def process_answers(answers):
 
         analysis_results.append(analysis_result)
 
-    return analysis_results  # Returns a list of dictionaries
+    return analysis_results  
