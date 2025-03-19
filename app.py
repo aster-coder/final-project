@@ -18,9 +18,7 @@ app = Flask(__name__)
 app.secret_key = "OLRoiKV7lSxdp17s"
 DATABASE = "interview_data.db"
 
-if not os.path.exists('temp_videos'):
-    os.makedirs('temp_videos')
-
+# --- Database Functions ---
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -29,16 +27,16 @@ def get_db():
     return db
 
 def init_db():
-    print("Initializing database...") #debug line
+    print("Initializing database...")
     with app.app_context():
         db = get_db()
         try:
             with app.open_resource('schema.sql', mode='r') as f:
                 db.cursor().executescript(f.read())
             db.commit()
-            print("Database initialized successfully.") #debug line
+            print("Database initialized successfully.")
         except Exception as e:
-            print(f"Error initializing database: {e}") #debug line
+            print(f"Error initializing database: {e}")
 
 @app.teardown_appcontext
 def close_connection(exception):
@@ -46,7 +44,15 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
-# Login code:
+# --- User Authentication Functions ---
+class User(UserMixin):
+    def __init__(self, user_id, email, password_hash):
+        self.id = user_id
+        self.email = email
+        self.password_hash = password_hash
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -58,7 +64,7 @@ def login():
         cursor = db.cursor()
         cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
         user_data = cursor.fetchone()
-        print(f"Login attempt: Email={email}, User data={user_data}") #debug line
+        print(f"Login attempt: Email={email}, User data={user_data}")
         if user_data and check_password_hash(user_data['password'], password):
             user = User(user_data['user_id'], user_data['email'], user_data['password'])
             login_user(user)
@@ -67,31 +73,6 @@ def login():
             return "Invalid email or password"
     return render_template('login.html')
 
-# Initialize login_manager AFTER the login route is defined
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
-
-@login_manager.user_loader
-def load_user(user_id):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
-    user = cursor.fetchone()
-    if user:
-        return User(user['user_id'], user['email'], user['password'])
-    return None
-
-# Class for users:
-class User(UserMixin):
-    def __init__(self, user_id, email, password_hash):
-        self.id = user_id
-        self.email = email
-        self.password_hash = password_hash
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
-# Register
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -112,8 +93,24 @@ def register():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('front_page'))  # Redirect to front_page
+    return redirect(url_for('front_page'))
 
+# --- Login Manager Initialization ---
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
+    user = cursor.fetchone()
+    if user:
+        return User(user['user_id'], user['email'], user['password'])
+    return None
+
+# --- Page Routing Functions ---
 @app.route('/front_page')
 def front_page():
     print(url_for('static', filename='favicon.ico'))
@@ -122,12 +119,10 @@ def front_page():
 @app.route('/start_interview')
 @login_required
 def start_interview():
-    """Redirects the user to the interview setup page."""
     return redirect(url_for('index'))
 
 @app.route('/start_interview_front')
 def start_interview_front():
-    """Redirects to interview setup if logged in, otherwise to login."""
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     else:
@@ -138,7 +133,7 @@ def start_interview_front():
 def dashboard():
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT session_id, timestamp FROM interviews WHERE user_id = ? ORDER BY timestamp DESC", (current_user.id,)) #add user_id to where clause
+    cursor.execute("SELECT session_id, timestamp FROM interviews WHERE user_id = ? ORDER BY timestamp DESC", (current_user.id,))
     sessions = cursor.fetchall()
     return render_template('dashboard.html', sessions=sessions)
 
@@ -147,7 +142,7 @@ def dashboard():
 def view_session(session_id):
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT interview_analysis, timestamp, session_id, eye_contact FROM interviews WHERE session_id = ? AND user_id = ?", (session_id, current_user.id)) #add user id to where clause
+    cursor.execute("SELECT interview_analysis, timestamp, session_id, eye_contact FROM interviews WHERE session_id = ? AND user_id = ?", (session_id, current_user.id))
     result = cursor.fetchone()
     if result and result['interview_analysis']:
         try:
@@ -160,7 +155,6 @@ def view_session(session_id):
     else:
         return "Session not found or analysis data is missing."
 
-
 @app.route("/", methods=["GET", "POST"])
 def index():
     if current_user.is_authenticated:
@@ -172,8 +166,8 @@ def index():
             session["asked_questions"] = []
             session["session_id"] = random.randint(1, 100000)
 
-            if request.form.get("test_mode"): #Check if test_mode checkbox is checked.
-                session["num_questions"] = 1 #overwrite num_questions if test mode is active.
+            if request.form.get("test_mode"):
+                session["num_questions"] = 1
 
             print(f"Session Answers initialized: {session.get('answers')}")
             return redirect(url_for('ask_question'))
@@ -181,6 +175,7 @@ def index():
     else:
         return redirect(url_for('front_page'))
 
+# --- Interview Logic Functions ---
 @app.route("/ask_question", methods=["GET"])
 def ask_question():
     if "question_index" not in session:
@@ -196,7 +191,6 @@ def ask_question():
             session["asked_questions"] = asked_questions + [question]
             return jsonify({"question": question})
         else:
-            # Check if all questions have been asked
             if session["question_index"] > session["num_questions"]:
                 return jsonify({"question": None})
             else:
@@ -221,7 +215,6 @@ def process_video():
         video_file.save(video_path)
 
         eye_contact_percentage = eye_contact_calculator.detect_eye_contact_ratio(video_path)
-
         os.remove(video_path)
 
         return jsonify({'eye_contact_percentage': eye_contact_percentage})
@@ -235,12 +228,11 @@ def get_interview_data(session_id):
         return json.loads(result['interview_answers'])
     return []
 
-
 def save_interview_data(session_id, data):
     db = get_db()
     cursor = db.cursor()
     cursor.execute("REPLACE INTO interviews (session_id, user_id, interview_answers, timestamp) VALUES (?, ?, ?, ?)",
-                   (session_id, current_user.id, json.dumps(data), datetime.datetime.now())) #add user id
+                    (session_id, current_user.id, json.dumps(data), datetime.datetime.now()))
     db.commit()
 
 @app.route("/submit_answer", methods=["POST"])
@@ -256,11 +248,9 @@ def submit_answer():
         answers.append({"question": question, "answer": answer})
         save_interview_data(session_id, answers)
 
-        # Check if it's the last question and end the interview if it is.
         if session["question_index"] >= session["num_questions"]:
             return end_interview()
 
-        # Increment question index
         session["question_index"] = session.get("question_index", 0) + 1
 
         return jsonify({"status": "success"})
@@ -282,7 +272,7 @@ def end_interview():
     cursor = db.cursor()
     try:
         cursor.execute("UPDATE interviews SET interview_analysis = ? WHERE session_id = ? AND user_id = ?",
-                       (json.dumps(analysis_results), session_id, current_user.id))
+                        (json.dumps(analysis_results), session_id, current_user.id))
         eye_contact_percentages = session.get('eye_contact_percentages', [])
         print(f"Eye contact percentages from session: {eye_contact_percentages}")
         if eye_contact_percentages:
@@ -307,12 +297,14 @@ def process_speech():
         "answer": text,
         "question": current_question
     }
-
     try:
-        submit_answer() #call submit answer function to save data.
+        submit_answer()
         return jsonify({'status': 'success'})
     except Exception as e:
         return jsonify({'error': str(e)})
-    
+
+# --- Initialization ---
 if __name__ == "__main__":
+    if not os.path.exists('temp_videos'):
+        os.makedirs('temp_videos')
     app.run(debug=True)
