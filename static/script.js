@@ -61,8 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else if (data.question) {
                     currentQuestion = data.question;
                     appendMessage('bot-message', data.question);
-                } else if (data.question === null) {
-                    console.log("No more questions.");
                 } else if (data.status === 'finished') {
                     inputArea.style.display = 'none';
                     console.log("Interview finished.");

@@ -62,7 +62,7 @@ def login():
         if user_data and check_password_hash(user_data['password'], password):
             user = User(user_data['user_id'], user_data['email'], user_data['password'])
             login_user(user)
-            return redirect(url_for('index'))
+            return redirect(url_for('dashboard'))
         else:
             return "Invalid email or password"
     return render_template('login.html')
@@ -103,7 +103,7 @@ def register():
         try:
             cursor.execute("INSERT INTO users (email, password) VALUES (?, ?)", (email, hashed_password))
             db.commit()
-            return redirect(url_for('login'))
+            return redirect(url_for('dashboard'))
         except sqlite3.IntegrityError:
             return "Email already registered"
     return render_template('register.html')
@@ -119,12 +119,26 @@ def front_page():
     print(url_for('static', filename='favicon.ico'))
     return render_template('front_page.html')
 
+@app.route('/start_interview')
+@login_required
+def start_interview():
+    """Redirects the user to the interview setup page."""
+    return redirect(url_for('index'))
+
+@app.route('/start_interview_front')
+def start_interview_front():
+    """Redirects to interview setup if logged in, otherwise to login."""
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    else:
+        return redirect(url_for('login'))
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT session_id, timestamp FROM interviews ORDER BY timestamp DESC")
+    cursor.execute("SELECT session_id, timestamp FROM interviews WHERE user_id = ? ORDER BY timestamp DESC", (current_user.id,)) #add user_id to where clause
     sessions = cursor.fetchall()
     return render_template('dashboard.html', sessions=sessions)
 
@@ -133,30 +147,34 @@ def dashboard():
 def view_session(session_id):
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT interview_analysis, timestamp, session_id, eye_contact FROM interviews WHERE session_id = ?", (session_id,))
+    cursor.execute("SELECT interview_analysis, timestamp, session_id, eye_contact FROM interviews WHERE session_id = ? AND user_id = ?", (session_id, current_user.id)) #add user id to where clause
     result = cursor.fetchone()
     if result and result['interview_analysis']:
         try:
             analysis = json.loads(result['interview_analysis'])
-            eye_contact = result['eye_contact']  # Get the eye_contact value
-            return render_template('session_details.html', analysis=analysis, session=result, eye_contact=eye_contact) #Pass eye_contact
+            eye_contact = result['eye_contact']
+            return render_template('session_details.html', analysis=analysis, session=result, eye_contact=eye_contact)
         except json.JSONDecodeError as e:
             print(f"JSON Decode Error: {e}")
             return "Error decoding session analysis."
     else:
         return "Session not found or analysis data is missing."
 
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if current_user.is_authenticated:
         if request.method == "POST":
             session["num_questions"] = int(request.form["num_questions"]) * 5
-            print(session["num_questions"])
             session["category_id"] = int(request.form["category_id"])
             session["answers"] = []
             session["question_index"] = 0
             session["asked_questions"] = []
             session["session_id"] = random.randint(1, 100000)
+
+            if request.form.get("test_mode"): #Check if test_mode checkbox is checked.
+                session["num_questions"] = 1 #overwrite num_questions if test mode is active.
+
             print(f"Session Answers initialized: {session.get('answers')}")
             return redirect(url_for('ask_question'))
         return render_template("index.html")
@@ -178,12 +196,15 @@ def ask_question():
             session["asked_questions"] = asked_questions + [question]
             return jsonify({"question": question})
         else:
-            return jsonify({"question": None})
+            # Check if all questions have been asked
+            if session["question_index"] > session["num_questions"]:
+                return jsonify({"question": None})
+            else:
+                return jsonify({"question": None, "error": "No question found, but not at end of questions."})
 
     except Exception as e:
         print(f"Error in ask_question: {e}")
         return jsonify({"error": str(e)})
-
 
 @app.route('/process_video', methods=['POST'])
 def process_video():
@@ -218,10 +239,9 @@ def get_interview_data(session_id):
 def save_interview_data(session_id, data):
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("REPLACE INTO interviews (session_id, interview_answers, timestamp) VALUES (?, ?, ?)",
-                   (session_id, json.dumps(data), datetime.datetime.now()))
+    cursor.execute("REPLACE INTO interviews (session_id, user_id, interview_answers, timestamp) VALUES (?, ?, ?, ?)",
+                   (session_id, current_user.id, json.dumps(data), datetime.datetime.now())) #add user id
     db.commit()
-
 
 @app.route("/submit_answer", methods=["POST"])
 def submit_answer():
@@ -229,19 +249,19 @@ def submit_answer():
         data = request.get_json()
         answer = data.get("answer", "")
         question = data.get("question", "")
-        eye_contact_percentages = data.get("eye_contact_percentages", []) 
-        session['eye_contact_percentages'] = eye_contact_percentages #add this line
+        eye_contact_percentages = data.get("eye_contact_percentages", [])
+        session['eye_contact_percentages'] = eye_contact_percentages
         session_id = session.get('session_id')
         answers = get_interview_data(session_id)
         answers.append({"question": question, "answer": answer})
         save_interview_data(session_id, answers)
 
-        # Increment question index
-        session["question_index"] = session.get("question_index", 0) + 1
-
         # Check if it's the last question and end the interview if it is.
         if session["question_index"] >= session["num_questions"]:
             return end_interview()
+
+        # Increment question index
+        session["question_index"] = session.get("question_index", 0) + 1
 
         return jsonify({"status": "success"})
 
@@ -261,16 +281,16 @@ def end_interview():
     db = get_db()
     cursor = db.cursor()
     try:
-        cursor.execute("UPDATE interviews SET interview_analysis = ? WHERE session_id = ?",
-                                    (json.dumps(analysis_results), session_id))
+        cursor.execute("UPDATE interviews SET interview_analysis = ? WHERE session_id = ? AND user_id = ?",
+                       (json.dumps(analysis_results), session_id, current_user.id))
         eye_contact_percentages = session.get('eye_contact_percentages', [])
-        print(f"Eye contact percentages from session: {eye_contact_percentages}") #debug line
+        print(f"Eye contact percentages from session: {eye_contact_percentages}")
         if eye_contact_percentages:
             eye_contact = sum(eye_contact_percentages) / len(eye_contact_percentages)
-            print(f"Calculated eye contact average: {eye_contact}") #debug line
+            print(f"Calculated eye contact average: {eye_contact}")
         else:
             eye_contact = 0
-        cursor.execute("UPDATE interviews SET eye_contact = ? WHERE session_id = ?", (eye_contact, session_id))
+        cursor.execute("UPDATE interviews SET eye_contact = ? WHERE session_id = ? AND user_id = ?", (eye_contact, session_id, current_user.id))
         db.commit()
     except Exception as e:
         print(f"Database error during end interview: {e}")
