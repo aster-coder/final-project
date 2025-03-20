@@ -1,0 +1,86 @@
+/* settings_style.css */
+
+body {
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+.settings-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.current-settings {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+}
+.settings-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color:#010c3b;
+    padding: 10px 10px;
+    text-align: right;
+    box-sizing: border-box; /* Added box-sizing */
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #007bff;
+    padding: 8px 15px;
+    margin: 0 0 0 10px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.nav-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.settings-container {
+    margin-top: 80px;
+}

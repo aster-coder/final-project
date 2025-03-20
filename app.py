@@ -311,6 +311,53 @@ def process_speech():
         return jsonify({'status': 'success'})
     except Exception as e:
         return jsonify({'error': str(e)})
+ 
+ # --- Settings Routes ---   
+@app.route('/settings')
+@login_required
+def settings():
+    return render_template('settings.html')
+
+@app.route('/get_settings')
+@login_required
+def get_settings():
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT first_name, last_name FROM users WHERE user_id = ?", (current_user.id,))
+    user_data = cursor.fetchone()
+    if user_data:
+        return jsonify({
+            'first_name': user_data['first_name'],
+            'last_name': user_data['last_name']
+        })
+    return jsonify({})
+
+@app.route('/update_settings', methods=['POST'])
+@login_required
+def update_settings():
+    first_name = request.form.get('first_name')
+    last_name = request.form.get('last_name')
+    password = request.form.get('password')
+    confirm_password = request.form.get('confirm_password')
+
+    if password and password != confirm_password:
+        return jsonify({'success': False, 'error': 'Passwords do not match'})
+
+    db = get_db()
+    cursor = db.cursor()
+    try:
+        if first_name:
+            cursor.execute("UPDATE users SET first_name = ? WHERE user_id = ?", (first_name, current_user.id))
+        if last_name:
+            cursor.execute("UPDATE users SET last_name = ? WHERE user_id = ?", (last_name, current_user.id))
+        if password:
+            hashed_password = generate_password_hash(password)
+            cursor.execute("UPDATE users SET password = ? WHERE user_id = ?", (hashed_password, current_user.id))
+        db.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        print(f"Error updating settings: {e}")
+        return jsonify({'success': False, 'error': str(e)})
 
 # --- Initialization ---
 if __name__ == "__main__":

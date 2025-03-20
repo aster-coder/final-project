@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Settings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='settings_style.css') }}">
+</head>
+<body>
+    <nav class="settings-nav">
+        <a href="/dashboard" class="nav-link">Dashboard</a>
+        <a href="/front_page" class="nav-link">Front Page</a>
+        <a href="/logout" class="nav-link">Logout</a>
+    </nav>
+    <div class="settings-container">
+        <h1>Settings</h1>
+
+        <div class="current-settings">
+            <h2>Your personal details</h2>
+            <p><strong>First Name:</strong> <span id="current-first-name"></span></p>
+            <p><strong>Last Name:</strong> <span id="current-last-name"></span></p>
+            </div>
+        <h3>Want to change your details?</h3>
+        <form id="settings-form">
+            <div class="form-group">
+                <label for="first-name">First Name:</label>
+                <input type="text" id="first-name" name="first_name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="last-name">Last Name:</label>
+                <input type="text" id="last-name" name="last_name" required>
+            </div>
+            <h3>Change your password here:</h3>
+            <div class="form-group">
+                <label for="password">New Password:</label>
+                <input type="password" id="password" name="password">
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="password" id="confirm-password" name="confirm_password">
+            </div>
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+    
+
+    <script src="{{ url_for('static', filename='settings_script.js') }}"></script>
+</body>
+</html>
