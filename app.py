@@ -113,7 +113,6 @@ def load_user(user_id):
 # --- Page Routing Functions ---
 @app.route('/front_page')
 def front_page():
-    print(url_for('static', filename='favicon.ico'))
     return render_template('front_page.html')
 
 @app.route('/start_interview')
@@ -155,25 +154,35 @@ def view_session(session_id):
     else:
         return "Session not found or analysis data is missing."
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET"])
 def index():
     if current_user.is_authenticated:
-        if request.method == "POST":
-            session["num_questions"] = int(request.form["num_questions"]) * 5
-            session["category_id"] = int(request.form["category_id"])
-            session["answers"] = []
-            session["question_index"] = 1
-            session["asked_questions"] = []
-            session["session_id"] = random.randint(1, 100000)
-
-            if request.form.get("test_mode"):
-                session["num_questions"] = 1
-
-            print(f"Session Answers initialized: {session.get('answers')}")
-            return redirect(url_for('ask_question'))
         return render_template("index.html")
     else:
         return redirect(url_for('front_page'))
+
+@app.route("/start_interview_config", methods=["POST"])
+def start_interview_config():
+    if current_user.is_authenticated:
+        session["num_questions"] = int(request.form["num_questions"]) * 5
+        session["category_id"] = int(request.form["category_id"])
+        session["answers"] = []
+        session["question_index"] = 1
+        session["asked_questions"] = []
+        session["session_id"] = random.randint(1, 100000)
+
+        if request.form.get("test_mode"):
+            session["num_questions"] = 1
+
+        print(f"Session Answers initialized: {session.get('answers')}")
+        return redirect(url_for('interview'))
+    else:
+        return redirect(url_for('front_page'))
+
+@app.route("/interview", methods=["GET"])
+@login_required
+def interview():
+    return render_template("interview.html")
 
 # --- Interview Logic Functions ---
 @app.route("/ask_question", methods=["GET"])

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width:device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<html>
+<head>
+    <title>Interview</title>
+    <link rel="icon" href="favicon.ico" sizes="32x32">
+    <link rel="stylesheet" href="{{ url_for('static', filename='interview_style.css') }}">
+</head>
+<body id="interview-page" class="interview-body">
+    <div id="interview-content-container">
+        <div class="chat-container interview-chat-container">
+            <div class="chat-messages interview-chat-messages"></div>
+            <div class="input-container interview-input-container">
+                <input type="text" id="user-input" placeholder="Type your message..." class="interview-user-input">
+                <button id="send-button" class="interview-send-button">Send</button>
+                <button id="speech-button" class="interview-speech-button">Speech</button>
+            </div>
+        </div>
+        <div id="webcam-container" class="interview-webcam-container">
+            <video id="webcam-video" autoplay playsinline class="interview-webcam-video"></video>
+        </div>
+    </div>
+
+    <footer id="interview-footer" class="interview-footer">
+        <a href="/front_page" class="interview-footer-link">Home</a>
+        <a href="/dashboard" class="interview-footer-link">Back to Dashboard</a>
+        <a href="/logout" class="interview-footer-logout">Logout</a>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

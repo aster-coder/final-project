@@ -1,0 +1,146 @@
+/* interview.css */
+
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+#interview-content-container {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    width: 100%;
+    justify-content: center;
+    
+}
+
+.chat-container {
+    width: 50%; /* Widened chat container */
+    height: 600px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin-top: 40px;
+    margin-left: 20px;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.message {
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    border-radius: 20px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+.bot-message {
+    background-color: #e0e0e0;
+    align-self: flex-start;
+}
+
+.user-message {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+#speech-button.active {
+    background-color: #008000;
+    color: white;
+}
+
+#speech-button {
+    transition: background-color 0.3s ease;
+}
+
+.input-container {
+    padding: 10px;
+    display: flex;
+}
+
+input[type="text"] {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-right: 5px;
+}
+
+button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: #888;
+    margin-left: 5px;
+}
+
+#webcam-container {
+    position: fixed; /* Fixed positioning */
+    bottom: 20px; /* Position at the bottom */
+    left: 20px; /* Position at the left */
+    width: 320px;
+    height: 180px;
+    z-index: 1000; /* Ensure it's on top */
+    padding-bottom: 320px
+}
+
+#webcam-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.interview-footer {
+    text-align: right;
+    padding: 20px 0;
+    background-color: #010c3b;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.interview-footer a {
+    text-decoration: none;
+    padding: 10px 20px;
+    
+    margin: 0 10px; /* Add some horizontal spacing between links */
+}
+
+.interview-footer-link {
+    color: #007bff;
+
+}
+
+.interview-footer-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.interview-footer-logout {
+    color: #dc3545; /* Red color for logout */
+    
+}
+
+.interview-footer-logout:hover {
+    background-color: #dc3545;
+    color: white;
+}

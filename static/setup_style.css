@@ -1,0 +1,109 @@
+/* setup.css */
+
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+#setup-content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chat-container {
+    width: 800px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-top: 40px;
+}
+
+#setup-interview-container {
+    padding: 10px;
+    background-color: #e0e0e0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#setup-interview {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#setup-interview fieldset {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#setup-interview label,
+#setup-interview select,
+#setup-interview button {
+    margin-bottom: 5px;
+    display: block;
+    width: calc(100% - 10px);
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+#webcam-container {
+    margin-top: 20px; /* Adjust as needed */
+    width: 320px;
+    height: 240px;
+    display: block;
+    text-align: center;
+}
+
+#webcam-video {
+    width: 100%;
+    height: 100%;
+}
+
+#webcam-instructions {
+    font-size: 0.9em;
+    color: #555;
+    margin-top: 5px;
+}
+.interview-footer {
+    text-align: right;
+    padding: 20px 0;
+    background-color: #010c3b;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.interview-footer a {
+    text-decoration: none;
+    padding: 10px 20px;
+    
+    margin: 0 10px; /* Add some horizontal spacing between links */
+}
+
+.interview-footer-link {
+    color: #007bff;
+    
+}
+
+.interview-footer-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.interview-footer-logout {
+    color: #dc3545; /* Red color for logout */
+    
+}
+
+.interview-footer-logout:hover {
+    background-color: #dc3545;
+    color: white;
+}
