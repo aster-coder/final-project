@@ -162,7 +162,7 @@ def index():
             session["num_questions"] = int(request.form["num_questions"]) * 5
             session["category_id"] = int(request.form["category_id"])
             session["answers"] = []
-            session["question_index"] = 0
+            session["question_index"] = 1
             session["asked_questions"] = []
             session["session_id"] = random.randint(1, 100000)
 
