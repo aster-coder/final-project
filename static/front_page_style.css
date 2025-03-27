@@ -1,5 +1,14 @@
-/*Front page css design*/
-ul {
+/* Front page CSS design */
+
+/* Global Styles */
+body {
+    margin: 0;
+    font-family: sans-serif; /* Add a default font for better readability */
+    line-height: 1.6; /* Improve text readability */
+}
+
+/* Navigation Bar */
+nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -8,151 +17,145 @@ ul {
     position: fixed;
     top: 0;
     width: 100%;
+    z-index: 100; /* Ensure it stays on top */
 }
-li {
+
+nav ul li {
     float: right;
 }
-li a {
+
+nav ul li a {
     display: block;
     color: rgb(236, 249, 241);
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
+    font-size: 1em; /* Consider using em for relative sizing */
 }
 
-li a:hover {
+nav ul li a:hover {
     background-color: #111;
 }
-body {
-    margin: 0; 
+
+nav ul li:first-child a {
+    float: left; /* Style the left-aligned item */
+    font-size: 1.5em; /* Make the title a bit larger */
+}
+
+/* Image Container Styles */
+.image-container,
+.right-image-container,
+.bottom-image-container {
+    text-align: center;
+    padding-top: 120px; /* Adjust for fixed navigation height */
+    padding-bottom: 50px;
+    display: flex;
+    justify-content: flex-start;
 }
 
 .image-container {
     background-color: rgb(65, 166, 255);
-    text-align: center;
-    padding-top: 100px;
-    padding-bottom: 0px; 
-    display: flex;
     justify-content: flex-start;
-}
-
-.image-container .image-text-wrapper {
-    display: flex;
-    align-items: center;
-    width: 90%;
-    max-width: 1200px;
-}
-
-.image-container .image-text-wrapper img {
-    max-width: 500px;
-    height: auto;
-    margin-right: 20px;
-}
-
-.image-container .text-content {
-    text-align: left;
-}
-
-.image-container .text-content h2 {
-    margin-bottom: 10px;
 }
 
 .right-image-container {
     background-color: white;
-    text-align: center;
-    padding-top: 100px;
-    padding-bottom: 0px; 
-    display: flex;
     justify-content: flex-end;
-}
-
-.right-image-container .image-text-wrapper {
-    display: flex;
-    align-items: center;
-    width: 90%;
-    max-width: 1200px;
-    flex-direction: row-reverse;
-}
-
-.right-image-container .image-text-wrapper img {
-    max-width: 500px;
-    height: auto;
-    margin-left: 20px;
-}
-
-.right-image-container .text-content {
-    text-align: left;
-}
-
-.right-image-container .text-content h2 {
-    margin-bottom: 10px;
 }
 
 .bottom-image-container {
     background-color: rgb(65, 166, 255);
-    text-align: center;
-    padding-top: 100px;
-    padding-bottom: 50px; /* Kept at 50px */
-    display: flex;
     justify-content: flex-start;
 }
 
+.image-container .image-text-wrapper,
+.right-image-container .image-text-wrapper,
 .bottom-image-container .image-text-wrapper {
     display: flex;
     align-items: center;
     width: 90%;
     max-width: 1200px;
+    margin: 0 auto; /* Center the content within the container */
 }
 
+/* Style for images in all containers */
+.image-container .image-text-wrapper img,
+.right-image-container .image-text-wrapper img,
 .bottom-image-container .image-text-wrapper img {
     max-width: 500px;
     height: auto;
+    border: 4px solid; /* Border color will be set below */
+    background-color: green; /* Set the background color to green */
+}
+
+/* Border colors for specific containers */
+.image-container .image-text-wrapper img {
+    border-color: white;
     margin-right: 20px;
 }
 
+.right-image-container .image-text-wrapper {
+    flex-direction: row-reverse;
+}
+
+.right-image-container .image-text-wrapper img {
+    border-color: blue;
+    margin-left: 20px;
+    margin-right: 0; /* Reset right margin */
+}
+
+.bottom-image-container .image-text-wrapper img {
+    border-color: white;
+    margin-right: 20px;
+}
+
+.image-container .text-content,
+.right-image-container .text-content,
 .bottom-image-container .text-content {
     text-align: left;
 }
 
+.image-container .text-content h2,
+.right-image-container .text-content h2,
 .bottom-image-container .text-content h2 {
     margin-bottom: 10px;
 }
-/* Style for the "Start Interview" button */
-.image-container .text-content a {
-    display: inline-block;
-    padding: 15px 30px; /* Larger padding for a bigger button */
-    font-size: 1.2em; /* Larger font size */
-    background-color: green; /* Green background */
-    color: white; /* White text */
-    text-decoration: none; /* Remove underline */
-    border-radius: 5px; /* Rounded corners */
-    margin-top: 20px; /* Add some space above the button */
-}
 
-.image-container .text-content a:hover {
-    background-color: darkgreen; /* Darker green on hover */
-}
+/* Button Styles */
+.image-container .text-content a,
 .right-image-container .text-content a {
     display: inline-block;
-    padding: 15px 30px; /* Larger padding for a bigger button */
-    font-size: 1.2em; /* Larger font size */
-    background-color: green; /* Green background */
-    color: white; /* White text */
-    text-decoration: none; /* Remove underline */
-    border-radius: 5px; /* Rounded corners */
-    margin-top: 20px; /* Add some space above the button */
+    padding: 15px 30px;
+    font-size: 1.2em;
+    background-color: green;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 20px;
 }
 
+.image-container .text-content a:hover,
 .right-image-container .text-content a:hover {
-    background-color: darkgreen; /* Darker green on hover */
+    background-color: darkgreen;
 }
+
+/* Footer Styles */
 footer {
     text-align: center;
-    padding: 3px;
+    padding: 10px; /* Reduced padding from 20px to 10px */
     background-color: #010c3b;
     color: white;
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
+}
+
+footer a {
+    color: white; /* Ensure link in footer is also white */
+    text-decoration: underline; /* Maintain underline for links */
+}
+
+footer a:hover {
+    color: #ddd; /* Slightly lighter on hover */
 }

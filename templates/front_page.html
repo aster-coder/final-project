@@ -1,52 +1,69 @@
 <!DOCTYPE html>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta charset="UTF-8">
-<html>
+<html lang="en">
 <head>
-    <title>JobCoach:Your friendly AI job interview helper</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobCoach: Your friendly AI job interview helper</title>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" sizes="32x32">
     <link rel="stylesheet" href="{{ url_for('static', filename='front_page_style.css') }}">
 </head>
 <body>
-    <div>
-        <ul>
-            <li style="float:left"><a style="font-size:24px">JobCoach:A friendly interview chatbot</a></li>
-            <li><a href="{{ url_for('login') }}">Login</a></li>
-            <li><a href="{{ url_for('register') }}">Register</a></li>
-        </ul>
-    </div>
-    <div class="image-container">
-        <div class="image-text-wrapper">
-            <img src="{{ url_for('static', filename='bot_clipboard_smile.png') }}" alt ="Image of a cartoony robot smiling and holiding a clipboard, with a speech bubble saying a tick mark and a cross" style ="width: 500px;height:400px">
-            <div class="text-content">
-                <h2>Struggling with your interviews?</h2>
-                <p>Placeholder text</p>
-                <a href="/start_interview_front">Start Interview</a>
+    <header>
+        <nav>
+            <ul>
+                <li style="float:left"><a style="font-size:24px">JobCoach: A friendly interview chatbot</a></li>
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="image-container">
+            <div class="image-text-wrapper">
+                <img src="{{ url_for('static', filename='bot_clipboard_smile.png') }}" alt="Image of a cartoony robot smiling and holding a clipboard, with a speech bubble saying a tick mark and a cross" style="width: 500px; height: 400px;">
+                <div class="text-content">
+                    <h2>Struggling with your interviews?</h2>
+                    <p>Fear not! For our friendly JobCoach is here to help you with your pre-interview nerves and get you ready for facing your future with renewed confidence. Not convinced? Try out an interview now!</p>
+                    <a href="/start_interview_front">Start Interview</a>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="right-image-container">
-        <div class="image-text-wrapper">
-            <img src="{{ url_for('static', filename='bot_question_face.png') }}" alt ="Image of a cartoony robot holidng a finger up to its face with a question mark on its screen face" style ="width: 500px;height:400px">
-            <div class="text-content">
-                <h2>Use guide</h2>
-                <p>Steps for how to use the interview bot, this will have a button to create an account and start their interview</p>
-                <a href="/start_interview_front">Start Interview</a>
+        </section>
+
+        <section class="right-image-container">
+            <div class="image-text-wrapper">
+                <img src="{{ url_for('static', filename='bot_question_face.png') }}" alt="Image of a cartoony robot holding a finger up to its face with a question mark on its screen face" style="width: 500px; height: 400px;">
+                <div class="text-content">
+                    <h2>Use guide</h2>
+                    <p>But wait! How do I use this nifty platform? Well, it's actually quite simple by following these steps:</p>
+                    <ol>
+                        <li>Login/Register an account with a valid email and password</li>
+                        <li>You will be taken to your dashboard which has a button on the top to start a new interview.</li>
+                        <li>When you start an interview you will be taken to the set up page, where you can select interview length (5 questions or 10 questions), interview type (general, sales, cs, it), and can adjust yourself so that your webcam is positioned on you properly.</li>
+                        <li>During the interview you can send responses that capture eye contact by pressing the speak button, which captures both eye contact through recording your webcam, and using speech to text to capture your speech (which is editable in the text window) simultaneously.</li>
+                        <li>Pressing the send button sends your message, and your webcam recording for processing, which means it will take some time for the next question to be sent from the bot.</li>
+                        <li>Once the interview is finished you will be redirected to your dashboard once more and the latest interview session will be at the top left of the dashboard.</li>
+                        <li>Clicking on that will give you your responses and the feedback of each response in an easy-to-read format, as well as your eye contact level during the interview! Isn't that cool?</li>
+                    </ol>
+                    <p>With that you should be easily able to prepare for your dream job with zero hassle! Click on the button to start with your AI interview now!</p>
+                    <a href="/start_interview_front">Start Interview</a>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="bottom-image-container">
-        <div class="image-text-wrapper">
-            <img src="{{ url_for('static', filename='bot_creator_repair.png') }}" alt ="Image of a cartoony human with a strained smile sweating, holding a wrench with one hand on their face next to a cartoony robot with a side panel on its screen head open, revealing wires, and a distressed look on its screen face" style ="width: 500px;height:400px">
-            <div class="text-content">
-                <h2>About</h2>
-                <p>Small section explaining who I am and the project</p>
+        </section>
+
+        <section class="bottom-image-container">
+            <div class="image-text-wrapper">
+                <img src="{{ url_for('static', filename='bot_creator_repair.png') }}" alt="Image of a cartoony human with a strained smile sweating, holding a wrench with one hand on their face next to a cartoony robot with a side panel on its screen head open, revealing wires, and a distressed look on its screen face" style="width: 500px; height: 400px;">
+                <div class="text-content">
+                    <h2>About</h2>
+                    <p>This project was developed by me, Astra Noronha, a final year BEng Computer Systems Engineering student at Middlesex University Dubai. In this about I'd like to thank my supervisor and friends for helping me with this project and encouraging me to keep going even when things seemed tough.</p>
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <footer>
-        <p>Copyright 2025 by Astra Noronha  |<a href="mailto:AN1143@live.mdx.ac.uk">Contact</a></p>
+        <p>Copyright 2025 by Astra Noronha | <a href="mailto:AN1143@live.mdx.ac.uk">Contact</a></p>
     </footer>
 </body>
 </html>

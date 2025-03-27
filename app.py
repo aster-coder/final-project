@@ -77,7 +77,15 @@ def login():
 def register():
     if request.method == 'POST':
         email = request.form['email']
+        confirm_email = request.form['confirm_email']
         password = request.form['password']
+        confirm_password = request.form['confirm_password']
+
+        if email != confirm_email:
+            return "Emails do not match"
+        if password != confirm_password:
+            return "Passwords do not match"
+
         hashed_password = generate_password_hash(password)
         db = get_db()
         cursor = db.cursor()
@@ -311,8 +319,8 @@ def process_speech():
         return jsonify({'status': 'success'})
     except Exception as e:
         return jsonify({'error': str(e)})
- 
- # --- Settings Routes ---   
+
+ # --- Settings Routes ---
 @app.route('/settings')
 @login_required
 def settings():
