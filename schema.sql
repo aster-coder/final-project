@@ -1,7 +1,8 @@
 DROP TABLE IF EXISTS interviews;
 DROP TABLE IF EXISTS question_list;
 DROP TABLE IF EXISTS users;
-
+--Table schema used in the project
+--consists of three tables users, question_list, interviews
 CREATE TABLE users (
     user_id INTEGER PRIMARY KEY,
     first_name TEXT,

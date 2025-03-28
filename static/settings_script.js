@@ -1,4 +1,5 @@
-// settings_script.js
+// settings_script.js specifically for the settings page
+//created because the main file was too long
 
 document.addEventListener('DOMContentLoaded', function() {
     const settingsForm = document.getElementById('settings-form');

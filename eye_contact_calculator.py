@@ -1,21 +1,19 @@
+#imports
 import cv2
 import dlib
 import numpy as np
 import time
 import os
-
+"""
+    How this function works:
+    Takes the video source, stored in the temp videos folder and an interval of 5 seconds
+    Uses Histogram of Oriented Gradients for eye contact detection
+    takes the shape landmarks file for the reference, and dlibs frontal face detector
+    Calcuates the Eye Aspect Ratio(EAR) for each frame and predicts the landmarks for the eyes
+    debug prints the current eye contact ratio over the interval
+    returns the average eye contact ratio in percentage format
+    """
 def detect_eye_contact_ratio(video_source, interval=5):
-    """
-    Detects eye contact ratio every 'interval' seconds and returns the overall average.
-    Prints intermediate averages for debugging.
-
-    Args:
-        video_source (str): The video file path.
-        interval (int): The interval in seconds.
-    Returns:
-        float: The overall average eye contact ratio, or None if an error occurs.
-    """
-
     if not isinstance(video_source, str) or not os.path.exists(video_source):
         print("Error: Invalid video file path.")
         return None

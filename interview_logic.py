@@ -1,13 +1,15 @@
+#imports
 import random
 import csv
-
+#all categories used in the project, can be expanded here
 SUBCATEGORY_MAPPING = {
     "general": 1,
     "sales": 2,
     "it": 3,
     "cs": 4,
 }
-
+#The interview questions are taken from a CSV file, and in case the file is not found there are generic questions listed
+#The questions are taken randomly from the list rather than in order to give a unique interview experience
 interview_questions = {}
 
 def load_questions(filepath="interview_questions.csv"):

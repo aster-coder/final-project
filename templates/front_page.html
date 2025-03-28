@@ -1,3 +1,4 @@
+<!--Front page html-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +13,7 @@
         <nav>
             <ul>
                 <li style="float:left"><a style="font-size:24px">JobCoach: A friendly interview chatbot</a></li>
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li> <!--goes to login if not if not logged in-->
                 <li><a href="{{ url_for('login') }}">Login</a></li>
                 <li><a href="{{ url_for('register') }}">Register</a></li>
             </ul>

@@ -1,6 +1,5 @@
 #Astra Noronha M00909675 PDE3823
-#backend of the website using flask to integrate 
-#here is where the main function of the chatbot logic are taken from
+#imports
 from flask import Flask, render_template, request, jsonify, session, g, redirect, url_for
 import sqlite3
 import datetime
@@ -13,12 +12,12 @@ import uuid
 import eye_contact_calculator
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-
+#Flask initialization
 app = Flask(__name__)
 app.secret_key = "OLRoiKV7lSxdp17s"
 DATABASE = "interview_data.db"
 
-# --- Database Functions ---
+#Database Functions
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -44,7 +43,7 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
-# --- User Authentication Functions ---
+#User Authentication Functions
 class User(UserMixin):
     def __init__(self, user_id, email, password_hash):
         self.id = user_id
@@ -103,7 +102,7 @@ def logout():
     logout_user()
     return redirect(url_for('front_page'))
 
-# --- Login Manager Initialization ---
+#Login Manager Initialization
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -118,7 +117,7 @@ def load_user(user_id):
         return User(user['user_id'], user['email'], user['password'])
     return None
 
-# --- Page Routing Functions ---
+#Page Routing Functions
 @app.route('/front_page')
 def front_page():
     return render_template('front_page.html')
@@ -192,7 +191,7 @@ def start_interview_config():
 def interview():
     return render_template("interview.html")
 
-# --- Interview Logic Functions ---
+#Interview Logic Functions
 @app.route("/ask_question", methods=["GET"])
 def ask_question():
     if "question_index" not in session:
@@ -320,7 +319,7 @@ def process_speech():
     except Exception as e:
         return jsonify({'error': str(e)})
 
- # --- Settings Routes ---
+ #Settings Routes
 @app.route('/settings')
 @login_required
 def settings():
@@ -367,7 +366,7 @@ def update_settings():
         print(f"Error updating settings: {e}")
         return jsonify({'success': False, 'error': str(e)})
 
-# --- Initialization ---
+#Initialization
 if __name__ == "__main__":
     if not os.path.exists('temp_videos'):
         os.makedirs('temp_videos')

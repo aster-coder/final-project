@@ -1,3 +1,5 @@
+// Main script of all functions used in every page of the website
+//Except for settings
 document.addEventListener('DOMContentLoaded', function() {
     const pageId = document.body.id;
 

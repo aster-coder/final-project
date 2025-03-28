@@ -1,3 +1,4 @@
+#imports
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import spacy
@@ -22,12 +23,13 @@ except OSError:
     spacy.cli.download("en_core_web_sm")
     nlp = spacy.load("en_core_web_sm")
 
-# Initialize text summarization model
-#summarizer = pipeline("summarization", model="t5-large")
+
 # Sentiment analyzer
 sia = SentimentIntensityAnalyzer()
 
-#changed to highlight common errors found in spoken speech over written text
+#Series of functions of analyzing the responses for grammer mistakes, the keyword context, the sentence structure, the filler words used
+#the coherence of the response, and the building of the feedback string
+#process answer uses all of these functions to give a formated feedback with the sentiment analysis
 def analyze_grammar(doc):
     """Analyzes grammar for job interview context (spoken language)."""
     errors = []
