@@ -12,6 +12,7 @@ import uuid
 import eye_contact_calculator
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+
 #Flask initialization
 app = Flask(__name__)
 app.secret_key = "OLRoiKV7lSxdp17s"

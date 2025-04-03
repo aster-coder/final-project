@@ -184,9 +184,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (SpeechRecognition) {
             const recognition = new SpeechRecognition();
-            recognition.continuous = false;
+            recognition.continuous = true;
             recognition.interimResults = true;
-            recognition.lang = 'en-US';
+            recognition.lang = 'en-UK';
             const speechButton = document.getElementById('speech-button');
             let speechActive = false;
 

@@ -11,7 +11,6 @@ SUBCATEGORY_MAPPING = {
 #The interview questions are taken from a CSV file, and in case the file is not found there are generic questions listed
 #The questions are taken randomly from the list rather than in order to give a unique interview experience
 interview_questions = {}
-
 def load_questions(filepath="interview_questions.csv"):
     """Loads questions from a CSV file."""
     questions = {}
