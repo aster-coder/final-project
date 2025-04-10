@@ -1,23 +1,23 @@
-/*login/register style */
+/*login and register design and rules */
 body {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Ensure the body takes full viewport height */
-    margin: 0; /* Remove default body margin */
+    min-height: 100vh; 
+    margin: 0; 
   }
   
-  /* Optional: If your form is in a container */
+ 
 .login-container { 
 border: 1px solid #ccc;
 border-radius: 5px; 
 text-align: center;
 }
 .login-icon {
-    width: 80px; /* Adjust size as needed */
+    width: 80px; 
     height: 80px;
-    margin-bottom: 20px; /* Space between icon and form */
+    margin-bottom: 20px; 
 }
 .login-container form {
     display: flex;
@@ -35,7 +35,7 @@ text-align: center;
 }
 
 .login-container button {
-    background-color: #007bff; /* Blue button */
+    background-color: #007bff; 
     color: white;
     padding: 12px 20px;
     border: none;
@@ -46,7 +46,7 @@ text-align: center;
 }
 
 .login-container button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #0056b3; 
 }
 
 .login-container a {

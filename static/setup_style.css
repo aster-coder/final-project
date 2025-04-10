@@ -1,4 +1,4 @@
-/* setup.css */
+/* Setup page design and rules*/
 
 body {
     font-family: sans-serif;
@@ -56,7 +56,7 @@ body {
 }
 
 #webcam-container {
-    margin-top: 20px; /* Adjust as needed */
+    margin-top: 20px; 
     width: 320px;
     height: 240px;
     display: block;
@@ -85,7 +85,7 @@ body {
     text-decoration: none;
     padding: 10px 20px;
     
-    margin: 0 10px; /* Add some horizontal spacing between links */
+    margin: 0 10px; 
 }
 
 .interview-footer-link {
@@ -99,7 +99,7 @@ body {
 }
 
 .interview-footer-logout {
-    color: #dc3545; /* Red color for logout */
+    color: #dc3545; 
     
 }
 

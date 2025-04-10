@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentFirstName = document.getElementById('current-first-name');
     const currentLastName = document.getElementById('current-last-name');
 
-    // Function to fetch and display current settings
+    // fet the current first name and last name of the account
     function fetchCurrentSettings() {
         fetch('/get_settings')
             .then(response => response.json())
@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Error fetching settings:', error));
     }
 
-    fetchCurrentSettings(); // Fetch settings on page load
-
+    fetchCurrentSettings();
+    //updates the settings with a new password if they change password
     settingsForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = formData.get('password');
         const confirmPassword = formData.get('confirm_password');
 
-        if (password || confirmPassword) { // Check if either password field has a value
+        if (password || confirmPassword) { 
             if (password !== confirmPassword) {
                 alert("Passwords do not match.");
                 return;
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 alert("Settings updated successfully!");
-                fetchCurrentSettings(); // Refresh displayed settings
+                fetchCurrentSettings(); 
             } else {
                 alert("Error updating settings.");
             }

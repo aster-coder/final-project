@@ -1,10 +1,12 @@
 // Main script of all functions used in every page of the website
-//Except for settings
+//Except for settings, due to the main script being quite long
+// and as the settings script was short it was easier to add it as a separate file
+// Main script for the website which handles the logic for the set up of the interview and the interview, as well as the webcam and speech recognition
 document.addEventListener('DOMContentLoaded', function() {
     const pageId = document.body.id;
 
     if (pageId === 'setup-page') {
-        // --- Setup Page Logic ---
+        //Setup Page Logic
         const setupInterviewForm = document.getElementById('setup-interview');
         const startButton = document.getElementById('start-interview');
         const webcamVideo = document.getElementById('webcam-video');
@@ -15,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 setupInterview();
             });
         }
-
+        //setup interview function
         function setupInterview() {
             const formData = new FormData(setupInterviewForm);
             fetch('/start_interview_config', {
@@ -32,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('An error occurred during interview setup.');
             });
         }
-
+        //initialzize Webcam function
         async function initializeWebcam(){
             try {
                 const videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -45,7 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeWebcam();
 
     } else if (pageId === 'interview-page') {
-        // --- Interview Page Logic ---
+        //Interview Page Logic
+        //initializing the elements of the page
         const chatMessages = document.querySelector('.chat-messages');
         const userInput = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
@@ -76,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         initializeWebcam();
-
+        //function to get the next interview question
         function getQuestion() {
             fetch('/ask_question')
                 .then(response => response.json())
@@ -104,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert('An error occurred while getting the question.');
                 });
         }
-
+        //function to send the message to the server and handle the webcam recording at the same time
         function sendMessage() {
             const message = userInput.value.trim();
             if (message) {
@@ -164,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 userInput.value = '';
             }
         }
-
+        //function to append messages to the chat windw
         function appendMessage(className, message) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', className);
@@ -179,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-
+        //grouping of speech recognition code alongside web cam recording code
         let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
         if (SpeechRecognition) {
@@ -241,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('speech-button').style.display = 'none';
         }
 
-
+        //function to send the video to the server
     function sendVideoToServer(blob) {
         return new Promise((resolve, reject) => {
             const formData = new FormData();
@@ -254,11 +257,11 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 eyeContactPercentages.push(data.eye_contact_percentage);
                 console.log("Eye contact percentages:", eyeContactPercentages);
-                resolve(); // Resolve the promise when video processing is complete
+                resolve(); 
             })
             .catch(error => {
                 console.error('Error sending video:', error);
-                reject(error); // Reject the promise on error
+                reject(error); 
             });
         });
     }

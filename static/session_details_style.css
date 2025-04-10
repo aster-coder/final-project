@@ -1,9 +1,9 @@
-/* session_details_style.css */
+/* Session details css design and rules */
 
 body {
     font-family: 'Arial', sans-serif;
     margin: 20px auto;
-    max-width: 800px; /* Limit width for report-like layout */
+    max-width: 800px; 
     line-height: 1.6;
     background-color: #f9f9f9;
     color: #333;
@@ -63,12 +63,12 @@ li strong {
     font-weight: 600;
 }
 
-li strong:first-child { /* Style the first strong element (Question:) */
-    margin-top: 10px; /* Add space before the question */
+li strong:first-child {
+    margin-top: 10px; 
 }
 
-li strong:not(:first-child) { /* Style all strong elements except the first one*/
-    margin-top: 15px; /* Add space before other strong elements */
+li strong:not(:first-child) { 
+    margin-top: 15px; 
 }
 
 li p {
@@ -76,14 +76,14 @@ li p {
 }
 
 /* Specific section styling */
-li > strong:nth-child(2) + p { /* Answer paragraph */
+li > strong:nth-child(2) + p {
     background-color: #f0f8ff;
     padding: 10px;
     border-radius: 5px;
     margin-top: 5px;
 }
 
-li > strong:nth-child(3) + p { /* Generated Feedback Paragraph */
+li > strong:nth-child(3) + p { 
     background-color: #f0fff0;
     padding: 10px;
     border-radius: 5px;
@@ -91,10 +91,9 @@ li > strong:nth-child(3) + p { /* Generated Feedback Paragraph */
 
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     body {
-        max-width: 95%; /* Adjust width for smaller screens */
+        max-width: 95%; 
         margin: 10px auto;
         padding: 15px;
     }

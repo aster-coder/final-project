@@ -1,13 +1,12 @@
-/* Front page CSS design */
+/* CSS front page design and rules */
 
-/* Global Styles */
 body {
     margin: 0;
-    font-family: sans-serif; /* Add a default font for better readability */
-    line-height: 1.6; /* Improve text readability */
+    font-family: sans-serif; 
+    line-height: 1.6;
 }
 
-/* Navigation Bar */
+
 nav ul {
     list-style-type: none;
     margin: 0;
@@ -17,7 +16,7 @@ nav ul {
     position: fixed;
     top: 0;
     width: 100%;
-    z-index: 100; /* Ensure it stays on top */
+    z-index: 100; 
 }
 
 nav ul li {
@@ -30,7 +29,7 @@ nav ul li a {
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
-    font-size: 1em; /* Consider using em for relative sizing */
+    font-size: 1em; 
 }
 
 nav ul li a:hover {
@@ -38,16 +37,16 @@ nav ul li a:hover {
 }
 
 nav ul li:first-child a {
-    float: left; /* Style the left-aligned item */
-    font-size: 1.5em; /* Make the title a bit larger */
+    float: left; 
+    font-size: 1.5em; 
 }
 
-/* Image Container Styles */
+
 .image-container,
 .right-image-container,
 .bottom-image-container {
     text-align: center;
-    padding-top: 120px; /* Adjust for fixed navigation height */
+    padding-top: 120px; 
     padding-bottom: 50px;
     display: flex;
     justify-content: flex-start;
@@ -75,20 +74,19 @@ nav ul li:first-child a {
     align-items: center;
     width: 90%;
     max-width: 1200px;
-    margin: 0 auto; /* Center the content within the container */
+    margin: 0 auto; 
 }
 
-/* Style for images in all containers */
 .image-container .image-text-wrapper img,
 .right-image-container .image-text-wrapper img,
 .bottom-image-container .image-text-wrapper img {
     max-width: 500px;
     height: auto;
-    border: 4px solid; /* Border color will be set below */
-    background-color: green; /* Set the background color to green */
+    border: 4px solid; 
+    background-color: green; 
 }
 
-/* Border colors for specific containers */
+
 .image-container .image-text-wrapper img {
     border-color: white;
     margin-right: 20px;
@@ -101,7 +99,7 @@ nav ul li:first-child a {
 .right-image-container .image-text-wrapper img {
     border-color: blue;
     margin-left: 20px;
-    margin-right: 0; /* Reset right margin */
+    margin-right: 0; 
 }
 
 .bottom-image-container .image-text-wrapper img {
@@ -121,7 +119,7 @@ nav ul li:first-child a {
     margin-bottom: 10px;
 }
 
-/* Button Styles */
+
 .image-container .text-content a,
 .right-image-container .text-content a {
     display: inline-block;
@@ -139,10 +137,9 @@ nav ul li:first-child a {
     background-color: darkgreen;
 }
 
-/* Footer Styles */
 footer {
     text-align: center;
-    padding: 10px; /* Reduced padding from 20px to 10px */
+    padding: 10px; 
     background-color: #010c3b;
     color: white;
     position: fixed;
@@ -152,10 +149,10 @@ footer {
 }
 
 footer a {
-    color: white; /* Ensure link in footer is also white */
-    text-decoration: underline; /* Maintain underline for links */
+    color: white; 
+    text-decoration: underline; 
 }
 
 footer a:hover {
-    color: #ddd; /* Slightly lighter on hover */
+    color: #ddd; 
 }

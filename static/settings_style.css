@@ -1,4 +1,4 @@
-/* settings_style.css */
+/* Settings page design and rules */
 
 body {
     font-family: sans-serif;
@@ -63,7 +63,7 @@ button:hover {
     background-color:#010c3b;
     padding: 10px 10px;
     text-align: right;
-    box-sizing: border-box; /* Added box-sizing */
+    box-sizing: border-box; 
 }
 
 .nav-link {

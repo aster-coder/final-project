@@ -67,7 +67,7 @@ def detect_eye_contact_ratio(video_source, interval=5):
         return 0.0
 
 def calculate_ear(eye_points):
-    """Calculates the Eye Aspect Ratio (EAR)."""
+    #Calculates the Eye Aspect Ratio (EAR).
     A = np.linalg.norm(np.array(eye_points[1]) - np.array(eye_points[5]))
     B = np.linalg.norm(np.array(eye_points[2]) - np.array(eye_points[4]))
     C = np.linalg.norm(np.array(eye_points[0]) - np.array(eye_points[3]))
