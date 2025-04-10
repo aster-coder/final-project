@@ -1,17 +1,19 @@
 #Astra Noronha M00909675 PDE3823
-#imports
+#imports 
 from flask import Flask, render_template, request, jsonify, session, g, redirect, url_for
-import sqlite3
-import datetime
-import interview_logic
-import random
-import json
-import nlp_processing
-import os
-import uuid
-import eye_contact_calculator
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+import sqlite3
+import datetime
+import random
+import json
+import os
+import uuid
+
+#created modules
+import eye_contact_calculator
+import nlp_processing
+import interview_logic
 
 #Flask initialization
 app = Flask(__name__)
